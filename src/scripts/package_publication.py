@@ -19,7 +19,7 @@ def included(path):
     if any(part.startswith(".") for part in rel.parts):
         return rel.as_posix() == ".gitignore"
     if rel.parts[0] not in {"src", "data", "configs", "outputs"}:
-        return rel.as_posix() in {"README.md", "PUBLICATION.md", "LICENSE", "environment.yml", "references.bib"}
+        return rel.as_posix() in {"README.md", "LICENSE", "environment.yml", "references.bib"}
     if any(part in {"__pycache__", "best_model", "representations", "salv_original_corpus"}
            or part.startswith("checkpoint-") or part.endswith("_regenerated")
            for part in rel.parts):

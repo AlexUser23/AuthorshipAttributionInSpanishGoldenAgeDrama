@@ -1,4 +1,4 @@
-# Plays added to SALV
+# Plays added to *Siempre ayuda la verdad*
 
 The expanded corpus contains the original 73 texts plus these 12 plays from [ETSO](https://etso.es/), selected using textual integrity criteria. Titles follow the filenames.
 
