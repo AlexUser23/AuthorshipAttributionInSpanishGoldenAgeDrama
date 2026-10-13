@@ -1,16 +1,9 @@
 {
   "experiment": "mrbert_es_salv_5runs",
   "source_script": "src/run_salv_5runs.py",
-  "status": "Documentary configuration; scripts do not load this file.",
-  "provenance": {
-    "shared_hyperparameters": "Extracted from the current scripts; shared across cross-validation models as confirmed by the author. Not independently verified against historical runs.",
-    "model_identifier": "Current scripts",
-    "learning_rate": "Active assignment in source script"
-  },
+  "status": "Parameter reference; not loaded by scripts.",
   "MODEL_NAME": "BSC-LT/MrBERT-es",
   "TOKENIZER_NAME": "BSC-LT/MrBERT-es",
-  "MODEL_REVISION": null,
-  "TOKENIZER_REVISION": null,
   "paths": {
     "TRAIN_CSV": "data/salv_splits_seed44/train.csv",
     "EVAL_CSV": "data/salv_splits_seed44/val.csv",
@@ -50,7 +43,7 @@
       ],
       "weight_decay": 0.0
     },
-    "other_arguments": "PyTorch defaults; exact historical package version unknown"
+    "other_arguments": "PyTorch defaults"
   },
   "scheduler": {
     "name": "linear_with_warmup",
@@ -79,10 +72,6 @@
     "3": "Lope",
     "4": "Tirso"
   },
-  "missing_fields": [
-    "MODEL_REVISION",
-    "TOKENIZER_REVISION"
-  ],
   "partitioning": {
     "split_seed": 44,
     "test_plays_per_author": {

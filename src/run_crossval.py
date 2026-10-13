@@ -1,18 +1,4 @@
-"""
-Cross-validation script mejorado para clasificación de autoría con mRoBERTa.
-
-MODIFICACIONES respecto a la versión anterior:
- - Se añaden métricas a nivel de COMEDIA COMPLETA por voto mayoritario.
-   El campo "comedia" del CSV indica a qué comedia pertenece cada chunk.
-   Se implementan dos estrategias de agregación:
-     a) Hard voting: la clase más predicha entre los chunks de la comedia.
-     b) Soft voting: se suman las probabilidades de todos los chunks y
-        se elige la clase con mayor probabilidad acumulada.
- - predict_and_save devuelve también comedy_true/pred/probs para el resumen global.
- - Se añade save_comedy_results() que guarda predicciones y métricas por comedia.
- - El resumen global incluye métricas pooled tanto a nivel chunk como a nivel comedia.
- - Mejoras previas mantenidas íntegramente.
-"""
+"""Encoder cross-validation with fragment- and play-level evaluation."""
 
 import os
 import random
@@ -51,9 +37,6 @@ from sklearn.metrics import (
     precision_recall_fscore_support,
 )
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Encoder JSON para tipos NumPy
-# ──────────────────────────────────────────────────────────────────────────────
 
 class NumpyEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -66,19 +49,18 @@ class NumpyEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# CONFIG
-# ──────────────────────────────────────────────────────────────────────────────
+# Configuration
 
-# Semilla fija; no garantiza resultados idénticos bit a bit en GPU.
-# Resolve repository paths independently of the working directory.
+
+# A fixed seed does not ensure bitwise reproducibility on GPU.
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 SEED = 44
 
 
 def seed_everything(seed):
-    """Fija los generadores aleatorios de Python, NumPy y PyTorch."""
+    """Seed Python, NumPy and PyTorch random generators."""
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -88,14 +70,14 @@ def seed_everything(seed):
 
 seed_everything(SEED)
 
-MODEL_NAME = "dccuchile/bert-base-spanish-wwm-cased" #"BSC-LT/MrBERT-es" #"BSC-LT/mRoBERTa"
+MODEL_NAME = "dccuchile/bert-base-spanish-wwm-cased"
 FOLDS_DIR = str(REPO_ROOT / "data/crossval_12folds_mroberta_tokenized")
 OUTPUT_DIR = str(REPO_ROOT / "outputs/crossval_experiments/beto_crossval_12folds")
 
-EARLY_STOPPING_PATIENCE     = 10 #70
-NUM_TRAIN_EPOCHS            = 45 #45
+EARLY_STOPPING_PATIENCE     = 10
+NUM_TRAIN_EPOCHS            = 45
 PER_DEVICE_TRAIN_BATCH_SIZE = 4
-LEARNING_RATE               = 4e-6 # 1e-4
+LEARNING_RATE               = 4e-6
 METRIC_FOR_BEST             = "eval_accuracy"
 GRAD_ACCUM_STEPS            = 4
 WARMUP_RATIO                = 0.1
@@ -104,9 +86,9 @@ MAX_GRAD_NORM               = 1.0
 LOGGING_STEPS               = 50
 EVAL_STRATEGY               = "epoch"
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Mapas de etiquetas
-# ──────────────────────────────────────────────────────────────────────────────
+
+# Author labels
+
 
 id2label = {
     0: "ALARCON",
@@ -124,9 +106,6 @@ NUM_LABELS  = len(id2label)
 LABEL_IDS   = list(id2label.keys())
 LABEL_NAMES = [id2label[i] for i in LABEL_IDS]
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Inicialización de directorios y tokenizador
-# ──────────────────────────────────────────────────────────────────────────────
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -143,10 +122,6 @@ with open(os.path.join(OUTPUT_DIR, "folds_selection.txt"), "w", encoding="utf-8"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 base_data_collator = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors="pt")
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# Dataset
-# ──────────────────────────────────────────────────────────────────────────────
 
 class TextDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, ids=None, max_length=512):
@@ -172,16 +147,15 @@ class TextDataset(Dataset):
 
 
 def collate_with_ids(features):
-    """Collate que extrae los ids antes de llamar al collator base."""
+    """Preserve sample IDs while padding model inputs."""
     ids = [f.pop("id") for f in features]
     batch = base_data_collator(features)
     batch["ids"] = torch.tensor(ids, dtype=torch.long)
     return batch
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Extracción de embeddings pre-head
-# ──────────────────────────────────────────────────────────────────────────────
+# Encoder representations before the classification head
+
 
 def extract_prehead_embeddings(
     model,
@@ -215,13 +189,9 @@ def extract_prehead_embeddings(
     return np.vstack(all_embs)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Evaluación
-# ──────────────────────────────────────────────────────────────────────────────
-
 @torch.no_grad()
 def evaluate(model, dataloader, device):
-    """Evalúa el modelo y devuelve loss, accuracy y f1_macro."""
+    """Return loss, accuracy and macro-F1."""
     model.eval()
     all_logits, all_labels = [], []
     total_loss, total_examples = 0.0, 0
@@ -250,9 +220,8 @@ def evaluate(model, dataloader, device):
     }
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Agregación por comedia (voto mayoritario)
-# ──────────────────────────────────────────────────────────────────────────────
+# Play-level aggregation
+
 
 def aggregate_by_comedy(
     sample_ids: np.ndarray,
@@ -261,31 +230,11 @@ def aggregate_by_comedy(
     y_probs: np.ndarray,
     test_df: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Agrega predicciones de chunks al nivel de comedia completa.
+    """Aggregate fragments by majority vote and summed class probabilities.
 
-    Estrategias implementadas:
-      - Hard voting : clase más predicha entre los chunks de la comedia.
-      - Soft voting : clase con mayor suma de probabilidades entre los chunks.
+    Sample IDs refer to test_df indices; returned probabilities are normalized sums."""
 
-    Parámetros
-    ----------
-    sample_ids : índices dentro del fold (coinciden con test_df.index)
-    y_true     : etiquetas verdaderas de cada chunk
-    y_pred     : predicciones chunk-level
-    y_probs    : probabilidades chunk-level, shape (N, num_labels)
-    test_df    : DataFrame original del fold de test; debe tener columna "comedia"
-
-    Devuelve
-    --------
-    comedy_df            : DataFrame con una fila por comedia y sus predicciones
-    comedy_true_hard     : etiquetas verdaderas de comedias
-    comedy_pred_hard     : predicciones por hard voting
-    comedy_pred_soft     : predicciones por soft voting
-    comedy_probs_soft    : probabilidades acumuladas normalizadas por comedia
-    """
-    # Mapear sample_idx → nombre de comedia
-    idx_to_comedy = test_df["comedia"].to_dict()   # {row_idx: nombre_comedia}
+    idx_to_comedy = test_df["comedia"].to_dict()
 
     records = []
     for sid, true_l, pred_l, prob_v in zip(sample_ids, y_true, y_pred, y_probs):
@@ -301,20 +250,20 @@ def aggregate_by_comedy(
 
     comedy_rows = []
     for comedy_name, grp in chunk_df.groupby("comedia"):
-        # Etiqueta verdadera: debe ser única por comedia; tomamos la moda por robustez
+        # Use the modal reference label within each play.
         true_labels_in_group = grp["true_label"].values
         true_label_comedy = int(pd.Series(true_labels_in_group).mode().iloc[0])
         n_chunks = len(grp)
 
-        # Hard voting
+        # Majority vote over fragment predictions.
         pred_counts = pd.Series(grp["pred_label"].values).value_counts()
         hard_pred = int(pred_counts.idxmax())
 
-        # Soft voting
-        prob_matrix = np.vstack(grp["probs"].values)   # (n_chunks, num_labels)
+        # Sum class probabilities across fragments.
+        prob_matrix = np.vstack(grp["probs"].values)
         summed_probs = prob_matrix.sum(axis=0)
         soft_pred = int(np.argmax(summed_probs))
-        soft_probs_norm = summed_probs / summed_probs.sum()  # normalizar a distribución
+        soft_probs_norm = summed_probs / summed_probs.sum()
 
         comedy_rows.append({
             "comedia":            comedy_name,
@@ -343,7 +292,7 @@ def aggregate_by_comedy(
 
 
 def comedy_metrics(y_true: np.ndarray, y_pred: np.ndarray, label: str = "") -> dict:
-    """Calcula accuracy, f1_macro, f1_micro y devuelve un dict."""
+    """Return play-level accuracy, macro-F1 and micro-F1."""
     if len(y_true) == 0:
         return {"accuracy": None, "f1_macro": None, "f1_micro": None}
     prefix = f"{label}_" if label else ""
@@ -365,18 +314,15 @@ def save_comedy_results(
     fold_outdir: str,
     fold_idx: int,
 ) -> dict:
-    """
-    Guarda los resultados a nivel de comedia en fold_outdir/comedy_level/ y
-    devuelve un dict con las métricas para incluir en el resumen del fold.
-    """
+    """Save play-level predictions and return their metrics."""
     comedy_dir = os.path.join(fold_outdir, "comedy_level")
     os.makedirs(comedy_dir, exist_ok=True)
 
-    # CSV con una fila por comedia
+
     comedy_df.to_csv(os.path.join(comedy_dir, "predictions_comedy.csv"),
                      index=False, encoding="utf-8")
 
-    # Matrices de confusión
+
     for strategy, preds in [("hard", comedy_pred_hard), ("soft", comedy_pred_soft)]:
         if len(comedy_true) == 0:
             continue
@@ -387,11 +333,11 @@ def save_comedy_results(
             encoding="utf-8"
         )
 
-    # Probabilidades soft acumuladas
+
     if comedy_probs_soft.size > 0:
         np.save(os.path.join(comedy_dir, "comedy_soft_probs.npy"), comedy_probs_soft)
 
-    # Métricas
+
     metrics_hard = comedy_metrics(comedy_true, comedy_pred_hard, label="hard")
     metrics_soft = comedy_metrics(comedy_true, comedy_pred_soft, label="soft")
     combined = {**metrics_hard, **metrics_soft, "n_comedias": len(comedy_df)}
@@ -404,22 +350,11 @@ def save_comedy_results(
     return combined
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Predicción y guardado por fold
-# ──────────────────────────────────────────────────────────────────────────────
-
 @torch.no_grad()
 def predict_and_save(
     model, dataloader, device, fold_outdir, fold_idx, test_source_file, test_df
 ):
-    """
-    Hace predicciones sobre el test set y guarda resultados a nivel de chunk y comedia.
-
-    Devuelve
-    --------
-    chunk_true, chunk_pred, chunk_probs, cm_chunk,
-    comedy_true, comedy_pred_hard, comedy_pred_soft, comedy_probs_soft
-    """
+    """Save test predictions and return fragment- and play-level results."""
     model.eval()
     all_logits, all_labels, all_ids = [], [], []
 
@@ -446,7 +381,7 @@ def predict_and_save(
     probs      = F.softmax(torch.from_numpy(all_logits), dim=1).numpy()
     preds      = np.argmax(all_logits, axis=1)
 
-    # ── Nivel CHUNK ───────────────────────────────────────────────────────────
+    # Fragment-level results
     preds_df = pd.DataFrame({
         "sample_idx_in_fold": all_ids,
         "global_sample_id":   [f"{test_source_file}_{int(i)}" for i in all_ids],
@@ -477,7 +412,7 @@ def predict_and_save(
 
     print(f"[Fold {fold_idx}] Predicciones chunk-level guardadas en: {fold_outdir}")
 
-    # ── Nivel COMEDIA ─────────────────────────────────────────────────────────
+    # Play-level results
     comedy_df_fold, comedy_true, comedy_pred_hard, comedy_pred_soft, comedy_probs_soft = \
         aggregate_by_comedy(all_ids, all_labels, preds, probs, test_df)
 
@@ -489,10 +424,6 @@ def predict_and_save(
     return (all_labels, preds, probs, cm_chunk,
             comedy_true, comedy_pred_hard, comedy_pred_soft, comedy_probs_soft)
 
-
-# ──────────────────────────────────────────────────────────────────────────────
-# Plotting
-# ──────────────────────────────────────────────────────────────────────────────
 
 def save_training_plot(history: dict, fold_idx: int, png_path: str):
     epochs = list(range(1, len(history["train_loss"]) + 1))
@@ -527,10 +458,6 @@ def save_training_plot(history: dict, fold_idx: int, png_path: str):
     plt.close(fig)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Utilidades de resumen
-# ──────────────────────────────────────────────────────────────────────────────
-
 def mean_std(values):
     vals = [v for v in values if v is not None]
     if not vals:
@@ -543,21 +470,20 @@ def mean_std(values):
     }
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# LOOP PRINCIPAL
-# ──────────────────────────────────────────────────────────────────────────────
+# Cross-validation
+
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
 
 results_per_fold = []
 
-# Acumuladores chunk-level
+
 global_all_true   = []
 global_all_pred   = []
 global_all_probs  = []
 
-# Acumuladores comedy-level
+
 global_comedy_true_hard  = []
 global_comedy_pred_hard  = []
 global_comedy_true_soft  = []
@@ -565,7 +491,7 @@ global_comedy_pred_soft  = []
 global_comedy_probs_soft = []
 
 for fold_idx in range(n_folds):
-    # Reiniciar cada fold para no depender del consumo aleatorio de los anteriores.
+    # Reset random generators for each fold.
     seed_everything(SEED)
     train_generator = torch.Generator().manual_seed(SEED)
     print("\n" + "=" * 60)
@@ -585,7 +511,7 @@ for fold_idx in range(n_folds):
     eval_df  = pd.read_csv(val_file).reset_index(drop=True)
     test_df  = pd.read_csv(test_file).reset_index(drop=True)
 
-    # Validar que existe la columna "comedia"
+
     if "comedia" not in test_df.columns:
         raise ValueError(
             f"El CSV {test_file} no contiene la columna 'comedia'. "
@@ -600,7 +526,7 @@ for fold_idx in range(n_folds):
         for p in train_files:
             f.write(f"  {p}\n")
 
-    # Datasets y DataLoaders
+
     train_dataset = TextDataset(train_df["texto"].tolist(), train_df["label"], tokenizer,
                                 ids=list(train_df.index), max_length=MAX_LENGTH)
     eval_dataset  = TextDataset(eval_df["texto"].tolist(),  eval_df["label"],  tokenizer,
@@ -616,7 +542,7 @@ for fold_idx in range(n_folds):
     test_dataloader  = DataLoader(test_dataset,  batch_size=PER_DEVICE_TRAIN_BATCH_SIZE,
                                   shuffle=False, collate_fn=collate_with_ids)
 
-    # Modelo, optimizador y scheduler
+
     model = AutoModelForSequenceClassification.from_pretrained(
         MODEL_NAME, num_labels=NUM_LABELS, id2label=id2label, label2id=label2id
     ).to(device)
@@ -715,7 +641,7 @@ for fold_idx in range(n_folds):
                 print(f"  Early stopping tras {EARLY_STOPPING_PATIENCE} épocas sin mejora.")
                 break
 
-    # ── Evaluación final con el mejor checkpoint ──────────────────────────────
+    # Final evaluation with the best validation checkpoint
     if best_checkpoint and os.path.isdir(best_checkpoint):
         print(f"[Fold {fold_idx}] Cargando best checkpoint: {best_checkpoint}")
         model = AutoModelForSequenceClassification.from_pretrained(best_checkpoint).to(device)
@@ -740,7 +666,7 @@ for fold_idx in range(n_folds):
         f.write("\n\nTest metrics:\n")
         f.write(json.dumps(final_test_metrics, indent=2, cls=NumpyEncoder))
 
-    # ── Representaciones (embeddings) ─────────────────────────────────────────
+
     try:
         texts_test = test_df["texto"].fillna("").astype(str).tolist()
         emb = extract_prehead_embeddings(model, tokenizer, texts_test, device,
@@ -760,19 +686,19 @@ for fold_idx in range(n_folds):
     except Exception as e:
         print(f"[Fold {fold_idx}] Error guardando representaciones: {e}")
 
-    # ── Predicciones, matrices y métricas por comedia ─────────────────────────
+
     (y_true, y_pred, y_probs, cm_fold,
      comedy_true, comedy_pred_hard, comedy_pred_soft, comedy_probs_soft) = predict_and_save(
         model, test_dataloader, device, fold_outdir, fold_idx, test_source_file, test_df
     )
 
-    # Acumular chunk-level
+
     if y_true.size > 0:
         global_all_true.append(y_true)
         global_all_pred.append(y_pred)
         global_all_probs.append(y_probs)
 
-    # Acumular comedy-level
+
     if comedy_true.size > 0:
         global_comedy_true_hard.append(comedy_true)
         global_comedy_pred_hard.append(comedy_pred_hard)
@@ -780,7 +706,7 @@ for fold_idx in range(n_folds):
         global_comedy_pred_soft.append(comedy_pred_soft)
         global_comedy_probs_soft.append(comedy_probs_soft)
 
-    # Métricas de comedia para el resumen del fold
+
     comedy_dir = os.path.join(fold_outdir, "comedy_level")
     comedy_m_path = os.path.join(comedy_dir, "comedy_metrics.json")
     comedy_m = {}
@@ -794,15 +720,15 @@ for fold_idx in range(n_folds):
         "test_file":                   test_source_file,
         "val_file":                    os.path.basename(val_file),
         "trained_epochs":              trained_epochs,
-        # Chunk-level
+
         "best_validation_f1":          best_val_metrics.get("f1_macro"),
         "best_validation_accuracy":    best_val_metrics.get("accuracy"),
         "test_f1_chunk":               final_test_metrics.get("f1_macro"),
         "test_accuracy_chunk":         final_test_metrics.get("accuracy"),
-        # Comedy-level hard voting
+
         "test_f1_comedy_hard":         comedy_m.get("hard_f1_macro"),
         "test_accuracy_comedy_hard":   comedy_m.get("hard_accuracy"),
-        # Comedy-level soft voting
+
         "test_f1_comedy_soft":         comedy_m.get("soft_f1_macro"),
         "test_accuracy_comedy_soft":   comedy_m.get("soft_accuracy"),
         "n_comedias_test":             comedy_m.get("n_comedias"),
@@ -813,23 +739,19 @@ for fold_idx in range(n_folds):
     torch.cuda.empty_cache()
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-# Resumen global
-# ──────────────────────────────────────────────────────────────────────────────
-
 summary = {
     "seed": SEED,
     "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
     "n_folds":  n_folds,
     "per_fold": results_per_fold,
-    # Estadísticas entre folds – chunk-level
+    # Variation across folds
     "chunk": {
         "val_f1":        mean_std([r["best_validation_f1"]       for r in results_per_fold]),
         "val_accuracy":  mean_std([r["best_validation_accuracy"]  for r in results_per_fold]),
         "test_f1":       mean_std([r["test_f1_chunk"]             for r in results_per_fold]),
         "test_accuracy": mean_std([r["test_accuracy_chunk"]       for r in results_per_fold]),
     },
-    # Estadísticas entre folds – comedy-level
+
     "comedy": {
         "hard": {
             "test_f1":       mean_std([r["test_f1_comedy_hard"]       for r in results_per_fold]),
@@ -842,7 +764,7 @@ summary = {
     },
 }
 
-# ── Pooled chunk-level ────────────────────────────────────────────────────────
+# Pooled fragment predictions
 if global_all_true:
     all_true  = np.concatenate(global_all_true)
     all_pred  = np.concatenate(global_all_pred)
@@ -874,12 +796,12 @@ if global_all_true:
     print("\nMétricas pooled CHUNK:")
     print(json.dumps(summary["chunk"]["pooled"], indent=2, cls=NumpyEncoder))
 
-# ── Pooled comedy-level ───────────────────────────────────────────────────────
+# Pooled play predictions
 if global_comedy_true_hard:
     comedy_dir_global = os.path.join(OUTPUT_DIR, "comedy_level_global")
     os.makedirs(comedy_dir_global, exist_ok=True)
 
-    # Hard voting
+
     all_ct_hard = np.concatenate(global_comedy_true_hard)
     all_cp_hard = np.concatenate(global_comedy_pred_hard)
 
@@ -898,7 +820,7 @@ if global_comedy_true_hard:
     }).to_csv(os.path.join(comedy_dir_global, "per_class_metrics_comedy_hard.csv"),
               index=False, encoding="utf-8")
 
-    # Soft voting
+
     all_ct_soft = np.concatenate(global_comedy_true_soft)
     all_cp_soft = np.concatenate(global_comedy_pred_soft)
     all_cp_probs_soft = np.concatenate(global_comedy_probs_soft)
@@ -941,7 +863,7 @@ if global_comedy_true_hard:
 else:
     print("No se acumularon predicciones de comedia.")
 
-# ── Guardar resumen final ─────────────────────────────────────────────────────
+
 summary_json = os.path.join(OUTPUT_DIR, "crossval_summary.json")
 with open(summary_json, "w", encoding="utf-8") as jf:
     json.dump(summary, jf, indent=2, ensure_ascii=False, cls=NumpyEncoder)

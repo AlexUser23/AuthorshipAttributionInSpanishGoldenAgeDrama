@@ -1,16 +1,9 @@
 {
   "experiment": "beto_crossval_12folds",
   "source_script": "src/run_crossval.py",
-  "status": "Documentary configuration; scripts do not load this file.",
-  "provenance": {
-    "shared_hyperparameters": "Extracted from the current scripts; shared across cross-validation models as confirmed by the author. Not independently verified against historical runs.",
-    "model_identifier": "Current scripts",
-    "learning_rate": "Confirmed by the author; kept fixed across all twelve cross-validation iterations."
-  },
+  "status": "Parameter reference; not loaded by scripts.",
   "MODEL_NAME": "dccuchile/bert-base-spanish-wwm-cased",
   "TOKENIZER_NAME": "dccuchile/bert-base-spanish-wwm-cased",
-  "MODEL_REVISION": null,
-  "TOKENIZER_REVISION": null,
   "paths": {
     "FOLDS_DIR": "data/crossval_12folds_mroberta_tokenized",
     "OUTPUT_DIR": "outputs/crossval_experiments/beto_crossval_12folds"
@@ -39,7 +32,7 @@
       ],
       "weight_decay": 0.0
     },
-    "other_arguments": "PyTorch defaults; exact historical package version unknown"
+    "other_arguments": "PyTorch defaults"
   },
   "scheduler": {
     "name": "linear_with_warmup",
@@ -72,10 +65,6 @@
     "7": "ROJAS",
     "8": "TIRSO"
   },
-  "missing_fields": [
-    "MODEL_REVISION",
-    "TOKENIZER_REVISION"
-  ],
   "partitioning": {
     "n_folds": 12,
     "test_fold": "i",

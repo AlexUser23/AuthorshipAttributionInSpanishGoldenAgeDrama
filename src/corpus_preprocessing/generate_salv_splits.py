@@ -7,26 +7,26 @@ from tqdm import tqdm
 import random
 import pandas as pd
 
-# Resolve repository paths independently of the working directory.
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-# --------------------- CONFIG ---------------------
-MODEL_NAME = "BSC-LT/mRoBERTa" # "dccuchile/bert-base-spanish-wwm-cased" # 
+# Configuration
+MODEL_NAME = "BSC-LT/mRoBERTa"
 INPUT_DIR = str(REPO_ROOT / "data/salv_expanded_corpus")
 OUTPUT_DIR = str(REPO_ROOT / "data/salv_splits_seed44")
 CHUNK_SIZE = 510
 STRIDE = 0
 ENCODING = "utf-8"
-SEED = 44 
+SEED = 44
 
-# Número de comedias por autor que irán a test (una variable por autor)
-N_TEST_ALARCON  = 8  # Alarcón
-N_TEST_BELMONTE = 3  # Belmonte
-N_TEST_CLARAMONTE = 3  # Claramonte
-N_TEST_LOPE     = 8  # Lope
-N_TEST_TIRSO    = 8  # Tirso
 
-# Mapa autor_key → n_test (la clave debe coincidir con el prefijo del nombre de archivo)
+N_TEST_ALARCON  = 8
+N_TEST_BELMONTE = 3
+N_TEST_CLARAMONTE = 3
+N_TEST_LOPE     = 8
+N_TEST_TIRSO    = 8
+
+# Author keys match filename prefixes.
 N_TEST_PER_AUTHOR = {
     "Alarcón":    N_TEST_ALARCON,
     "Belmonte":   N_TEST_BELMONTE,
@@ -35,25 +35,21 @@ N_TEST_PER_AUTHOR = {
     "Tirso":      N_TEST_TIRSO,
 }
 
-N_VALID_PER_AUTHOR = 2  # número de comedias por autor que irán a validación (después de sacar test)
-DUDA_AUTHOR_KEY = "DUDA"  # clave del autor con atribución dudosa
-# --------------------------------------------------
+N_VALID_PER_AUTHOR = 2
+DUDA_AUTHOR_KEY = "DUDA"
+
 
 random.seed(SEED)
 
-# Ejecutar con el entorno qlora3 y conservar la configuración del modelo.
+
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 if not tokenizer.is_fast:
     raise ValueError("El chunking requiere un tokenizador rápido con offsets.")
 
 
 def normalizar_texto(texto: str) -> str:
-    """
-    Normalización Unicode sin alterar saltos de línea lógicos,
-    colapsa múltiples espacios en uno y elimina espacios inmediatamente
-    después (y antes) de un salto de línea.
-    """
-    # Normalización Unicode y unificar finales de línea
+    """Apply NFKC normalization and unify line endings."""
+
     texto = unicodedata.normalize("NFKC", texto)
     texto = texto.replace("\r\n", "\n").replace("\r", "\n")
 
@@ -65,10 +61,7 @@ def tokenizar_modelo(texto: str):
 
 
 def hacer_chunks_texto_original(texto: str, chunk_size: int, stride: int):
-    """
-    Hace chunking en base a offsets de tokens (sin añadir special tokens).
-    Devuelve lista de strings (chunks) sin recortar por comillas u otras cosas.
-    """
+    """Slice text using token offsets without special tokens."""
     encoding = tokenizer(texto, add_special_tokens=False, return_offsets_mapping=True)
     offsets = encoding["offset_mapping"]
 
@@ -92,21 +85,21 @@ def hacer_chunks_texto_original(texto: str, chunk_size: int, stride: int):
     return chunks
 
 
-# Orden estable para que la selección con semilla no dependa de os.listdir.
+# Sort filenames before seeded sampling.
 archivos = sorted(f for f in os.listdir(INPUT_DIR) if f.lower().endswith(".txt"))
 if not archivos:
     raise ValueError(f"No se han encontrado archivos .txt en {INPUT_DIR}")
 
-# Agrupar archivos por autor
-# Se asume que el nombre del archivo tiene la forma "AUTOR_restodelnombre.txt"
+
+# Filenames use the author_title.txt convention.
 autor_to_files = {}
-duda_files = []  # lista separada para comedias con autoría dudosa
+duda_files = []
 
 for nombre_archivo in archivos:
     autor = nombre_archivo.split("_")[0]
     autor_key = autor if not autor.lower().startswith("desconocido") else "UNLABELED"
     ruta = os.path.join(INPUT_DIR, nombre_archivo)
-    comedia = os.path.splitext(nombre_archivo)[0]  # nombre del archivo sin extensión
+    comedia = os.path.splitext(nombre_archivo)[0]
 
     entry = {
         "filename": nombre_archivo,
@@ -115,37 +108,37 @@ for nombre_archivo in archivos:
         "autor": autor_key
     }
 
-    # Separar comedias de autor DUDA en su propia lista
+
     if autor_key == DUDA_AUTHOR_KEY:
         duda_files.append(entry)
     else:
         autor_to_files.setdefault(autor_key, []).append(entry)
 
-# Crear listas de archivos para train/val/test
+
 train_files = []
 val_files = []
 test_files = []
 
 for autor, files in autor_to_files.items():
-    files_copy = list(files)  # trabajar sobre copia
+    files_copy = list(files)
     n_available = len(files_copy)
 
-    # 1) seleccionar para TEST usando el n_test específico del autor
-    #    Si el autor no está en el mapa, se usa 0 por defecto
+    # Select test plays first; unlisted authors receive no test plays.
+
     n_test_autor = N_TEST_PER_AUTHOR.get(autor, 0)
     k_test = min(n_test_autor, n_available)
     seleccion_test = random.sample(files_copy, k=k_test) if k_test > 0 else []
     seleccion_test_set = {f["filename"] for f in seleccion_test}
 
-    # remover los seleccionados para test de la lista disponible
+
     remaining_after_test = [f for f in files_copy if f["filename"] not in seleccion_test_set]
 
-    # 2) seleccionar para VALIDACIÓN (hasta N_VALID_PER_AUTHOR) desde los restantes
+    # Select validation plays from the remaining texts.
     k_val = min(N_VALID_PER_AUTHOR, len(remaining_after_test))
     seleccion_val = random.sample(remaining_after_test, k=k_val) if k_val > 0 else []
     seleccion_val_set = {f["filename"] for f in seleccion_val}
 
-    # 3) asignar a test, val y train
+
     for f in files_copy:
         if f["filename"] in seleccion_test_set:
             test_files.append(f)
@@ -154,7 +147,7 @@ for autor, files in autor_to_files.items():
         else:
             train_files.append(f)
 
-# Aviso al usuario (impreso)
+
 print(f"Autores encontrados (excl. DUDA): {len(autor_to_files)}")
 print(f"Total archivos (excl. DUDA): {len(archivos) - len(duda_files)}")
 print(f"Archivos con autor DUDA: {len(duda_files)}")
@@ -163,7 +156,7 @@ print(f"Archivos en val:   {len(val_files)}")
 print(f"Archivos en test:  {len(test_files)}")
 print(f"Nota: n_test por autor → {N_TEST_PER_AUTHOR}; val por autor → {N_VALID_PER_AUTHOR}")
 
-# Función que procesa una lista de archivos (crea chunks y filas)
+
 def procesar_lista_archivos(file_list):
     filas = []
     for meta in tqdm(file_list, desc="Chunking archivos"):
@@ -183,14 +176,14 @@ def procesar_lista_archivos(file_list):
                 "texto": chunk,
                 "autor": autor,
                 "comedia": comedia,
-                "posicion": i,            # posición dentro de la comedia (reinicia por cada comedia)
+                "posicion": i,
                 "num_tokens": num_tokens,
-                #"archivo_origen": os.path.basename(ruta)
+
             })
     return filas
 
 
-# Procesar train, val y test por separado (para evitar data leakage)
+# Fragment partitions separately; keep disputed plays independent.
 print("Procesando TRAIN...")
 train_rows = procesar_lista_archivos(train_files)
 
@@ -203,16 +196,16 @@ test_rows = procesar_lista_archivos(test_files)
 print("Procesando DUDA...")
 duda_rows = procesar_lista_archivos(duda_files)
 
-# Crear dataframes
+
 df_train = pd.DataFrame(train_rows)
 df_val = pd.DataFrame(val_rows)
 df_test = pd.DataFrame(test_rows)
 df_duda = pd.DataFrame(duda_rows)
 
-# Crear directorio de salida
+
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# Guardar CSVs
+
 path_train = os.path.join(OUTPUT_DIR, "train.csv")
 path_val = os.path.join(OUTPUT_DIR, "val.csv")
 path_test = os.path.join(OUTPUT_DIR, "test.csv")
@@ -229,9 +222,7 @@ print(" - val:  ", path_val)
 print(" - test: ", path_test)
 print(" - duda: ", path_duda)
 
-# ---- Resumen por autor con chunks por conjunto ----
 
-# Calcular chunks por autor por conjunto a partir de los dataframes generados
 def chunks_por_autor(df):
     if df.empty:
         return {}
@@ -242,7 +233,7 @@ val_chunks   = chunks_por_autor(df_val)
 test_chunks  = chunks_por_autor(df_test)
 duda_chunks  = chunks_por_autor(df_duda)
 
-# Construir resumen unificado de todos los autores (incluyendo DUDA)
+
 todos_los_autores = set(autor_to_files.keys()) | {DUDA_AUTHOR_KEY}
 
 resumen = []
@@ -288,7 +279,7 @@ path_resumen = os.path.join(OUTPUT_DIR, "resumen_por_autor.csv")
 df_resumen.to_csv(path_resumen, index=False, encoding="utf-8")
 print("Resumen por autor guardado en:", path_resumen)
 
-# Imprimir totales globales de chunks
+
 print("\n── Totales globales de chunks ──")
 print(f"  train : {len(df_train)}")
 print(f"  val   : {len(df_val)}")

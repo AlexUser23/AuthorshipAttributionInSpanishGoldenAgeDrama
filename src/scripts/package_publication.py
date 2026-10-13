@@ -1,4 +1,4 @@
-"""Build a small review archive without changing historical local outputs."""
+"""Package code, data and results without model weights."""
 
 import argparse
 import hashlib
@@ -25,7 +25,7 @@ def included(path):
            for part in rel.parts):
         return False
     if path.suffix == ".npy":
-        # Keep probabilities used for further analyses, omit CSV-equivalent matrices.
+        # Keep probability arrays; omit duplicate confusion matrices.
         return rel.parts[0] == "outputs" and "probs" in path.stem
     return path.suffix in TEXT_SUFFIXES
 

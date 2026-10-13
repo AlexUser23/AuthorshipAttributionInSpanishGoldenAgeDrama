@@ -1,4 +1,4 @@
-"""Three training-only MFW baselines and a majority-author baseline."""
+"""MFW-based Delta and linear SVM baselines with a majority-author reference."""
 
 import argparse
 from collections import Counter
@@ -61,7 +61,7 @@ def load_corpus(root):
     if [p.name for p in files] != [f"fold_{i:02d}.csv" for i in range(N_FOLDS)]:
         raise ValueError("Expected exactly fold_00.csv through fold_11.csv.")
     for fold, path in enumerate(files):
-        # splitlines(keepends=True) preserves newlines inside quoted CSV fields.
+        # Preserve line breaks inside quoted CSV fields.
         rows = list(csv.DictReader(read(path).splitlines(keepends=True)))
         if not rows or not {"texto", "autor", "comedia", "posicion"} <= rows[0].keys():
             raise ValueError(f"Empty fold or missing columns: {path}")
@@ -107,12 +107,12 @@ def fit_features(train, n_mfw=N_MFW):
     total = Counter()
     for sample in train:
         total.update(sample.counts)
-    # Alphabetical tie-breaking makes the vocabulary independent of row order.
+    # Break vocabulary ties alphabetically.
     vocabulary = sorted(total, key=lambda word: (-total[word], word))[:n_mfw]
     if len(vocabulary) < n_mfw:
         raise ValueError(f"Training vocabulary has fewer than {n_mfw} words.")
     x = relative_frequencies(train, vocabulary)
-    # Exact constant columns can acquire tiny nonzero std through round-off.
+    # Exclude constant columns before computing standard deviations.
     keep = np.ptp(x, axis=0) > 0
     if not keep.any():
         raise ValueError("No variable MFW features remain.")
@@ -135,7 +135,7 @@ def nearest_author(train, test, authors, metric):
     distances = cdist(test, train, metric=metric)
     if metric == "cityblock":
         distances /= train.shape[1]
-    # np.argmin picks the first training row in an exact distance tie.
+    # Break distance ties by training-row order.
     return authors[distances.argmin(axis=1)]
 
 
@@ -183,7 +183,7 @@ def evaluate(samples):
         x_val = transform(val, fitted)
         svm = select_svm(x_train, authors, x_val, [s.author for s in val])
         chosen_c.append(svm.C)
-        # Test samples enter only after the model has been selected.
+        # Evaluate test samples after model selection.
         x_test = transform(test, fitted)
         predictions["classic_delta"].extend(nearest_author(x_train, x_test, authors, "cityblock"))
         predictions["cosine_delta"].extend(nearest_author(x_train, x_test, authors, "cosine"))

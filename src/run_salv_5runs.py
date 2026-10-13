@@ -12,7 +12,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torch.optim import AdamW
 
-# For plotting without display
+# Use a non-interactive plotting backend.
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -36,12 +36,12 @@ from sklearn.preprocessing import LabelEncoder
 from scipy.cluster.hierarchy import dendrogram, linkage
 from scipy.spatial.distance import pdist
 
-# Resolve repository paths independently of the working directory.
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# ----------------------------
-# CONFIG - editar rutas/valores
-# ----------------------------
+
+# Configuration
+
 MODEL_NAME = "BSC-LT/MrBERT-es"
 TRAIN_CSV = str(REPO_ROOT / "data/salv_splits_seed44/train.csv")
 EVAL_CSV = str(REPO_ROOT / "data/salv_splits_seed44/val.csv")
@@ -50,16 +50,16 @@ DUDA_CSV = str(REPO_ROOT / "data/salv_splits_seed44/duda.csv")
 OUTPUT_DIR = str(REPO_ROOT / "outputs/salv_experiments/mrbert_es_salv_5runs")
 
 SEEDS = (1, 2, 3, 4, 5)
-#OUTPUT_DIR = OUTPUT_DIR + "_5_runs"
+
 
 EARLY_STOPPING_PATIENCE = 10
 NUM_TRAIN_EPOCHS = 45
 PER_DEVICE_TRAIN_BATCH_SIZE = 4
-LEARNING_RATE = 1e-5 #1e-4
+LEARNING_RATE = 1e-5
 SAVE_TOTAL_LIMIT = 2
 METRIC_FOR_BEST = "eval_accuracy"
-GRAD_ACCUM_STEPS = 4 #4
-WARMUP_RATIO = 0.1 #0.2 #0.15####0.1
+GRAD_ACCUM_STEPS = 4
+WARMUP_RATIO = 0.1
 MAX_LENGTH = 512
 MAX_GRAD_NORM = 1.0
 LOGGING_STEPS = 50
@@ -67,10 +67,10 @@ EVAL_STRATEGY = "epoch"
 SAVE_STRATEGY = "epoch"
 
 
-# Número de componentes PCA antes de aplicar UMAP
-PCA_DIMS_FOR_UMAP = 300  # <-- modificar según necesidad
+# PCA dimensions before UMAP.
+PCA_DIMS_FOR_UMAP = 300
 
-# Mapas de etiqueta
+
 id2author = id2label = {
     0: "Alarcón",
     1: "Belmonte",
@@ -87,50 +87,43 @@ author2id = label2id = {
     "Tirso":      4,
 }
 
-# -------------------------------------------------------
-# Paleta de colores por autor
-# -------------------------------------------------------
+
 AUTHOR_COLORS = {
-    "Alarcón":    "#E63946",   # rojo vivo
-    "Belmonte":   "#2A9D8F",   # verde azulado
-    "Claramonte": "#F4A261",   # naranja cálido
-    "Lope":       "#457B9D",   # azul acero
-    "Tirso":      "#8338EC",   # violeta brillante
-    "DUDA":       "#AAAAAA",   # gris para autoría dudosa
+    "Alarcón":    "#E63946",
+    "Belmonte":   "#2A9D8F",
+    "Claramonte": "#F4A261",
+    "Lope":       "#457B9D",
+    "Tirso":      "#8338EC",
+    "DUDA":       "#AAAAAA",
 }
 
-# Formas de marcador por comedia (se asignan dinámicamente)
+
 MARKER_STYLES = ["o", "s", "^", "D", "v", "P", "*", "X", "h", ">", "<", "p", "H", "8", "+"]
 
 def run_experiment(SEED, OUTPUT_DIR):
-    # Fijar la semilla antes de inicializar el modelo y los DataLoaders.
+
     set_seed(SEED)
 
-    # Asegurarse que OUTPUT_DIR existe
+
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
 
-    # ----------------------------
-    # Cargar datos (pandas)
-    # ----------------------------
+
     train_df = pd.read_csv(TRAIN_CSV)
     eval_df  = pd.read_csv(EVAL_CSV)
     test_df  = pd.read_csv(TEST_CSV)
 
-    # Cargar comedia dudosa como conjunto independiente
+
     duda_df = pd.read_csv(DUDA_CSV)
     print(f"[INFO] Cargados {len(duda_df)} chunk(s) de la comedia dudosa desde: {DUDA_CSV}")
     print(f"[INFO] Comedias DUDA: {duda_df['comedia'].unique().tolist()}")
 
-    # Asignar etiquetas numéricas
+
     train_df["label"]  = train_df["autor"].map(author2id)
     eval_df["label"]   = eval_df["autor"].map(author2id)
     test_df["label"]   = test_df["autor"].map(author2id)
-    # duda_df no tiene etiqueta (autor desconocido)
 
-    # ----------------------------
-    # Tokenizador y modelo
-    # ----------------------------
+
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSequenceClassification.from_pretrained(
         MODEL_NAME,
@@ -142,9 +135,7 @@ def run_experiment(SEED, OUTPUT_DIR):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    # ----------------------------
-    # Dataset PyTorch
-    # ----------------------------
+
     class TextDataset(Dataset):
         def __init__(self, texts, labels, tokenizer, max_length=512):
             self.texts      = texts
@@ -164,7 +155,7 @@ def run_experiment(SEED, OUTPUT_DIR):
 
 
     class TextDatasetNoLabel(Dataset):
-        """Dataset sin etiquetas para la comedia dudosa."""
+        """Unlabelled fragments of the disputed play."""
         def __init__(self, texts, tokenizer, max_length=512):
             self.texts      = texts
             self.tokenizer  = tokenizer
@@ -179,7 +170,6 @@ def run_experiment(SEED, OUTPUT_DIR):
             return enc
 
 
-    # Crear datasets y dataloaders
     train_dataset = TextDataset(train_df["texto"].tolist(), train_df["label"], tokenizer, max_length=MAX_LENGTH)
     eval_dataset  = TextDataset(eval_df["texto"].tolist(),  eval_df["label"],  tokenizer, max_length=MAX_LENGTH)
     test_dataset  = TextDataset(test_df["texto"].tolist(),  test_df["label"],  tokenizer, max_length=MAX_LENGTH)
@@ -190,9 +180,7 @@ def run_experiment(SEED, OUTPUT_DIR):
     eval_dataloader  = DataLoader(eval_dataset,  batch_size=PER_DEVICE_TRAIN_BATCH_SIZE, shuffle=False, collate_fn=data_collator)
     test_dataloader  = DataLoader(test_dataset,  batch_size=PER_DEVICE_TRAIN_BATCH_SIZE, shuffle=False, collate_fn=data_collator)
 
-    # ----------------------------
-    # Métricas
-    # ----------------------------
+
     def compute_metrics_from_logits(logits, labels):
         preds = np.argmax(logits, axis=1)
         acc   = accuracy_score(labels, preds)
@@ -200,9 +188,6 @@ def run_experiment(SEED, OUTPUT_DIR):
         return {"accuracy": acc, "f1_macro": f1}
 
 
-    # ----------------------------
-    # Métricas por comedia (votación mayoritaria de chunks)
-    # ----------------------------
     def compute_comedy_majority_vote_metrics(df_known, chunk_preds, split_name=""):
         df = df_known.copy()
         df["pred"] = chunk_preds
@@ -262,9 +247,6 @@ def run_experiment(SEED, OUTPUT_DIR):
         return out_path
 
 
-    # ----------------------------
-    # Optimizador y scheduler
-    # ----------------------------
     no_decay = ["bias", "LayerNorm.weight"]
     optimizer_grouped_parameters = [
         {
@@ -283,9 +265,7 @@ def run_experiment(SEED, OUTPUT_DIR):
     warmup_steps               = int(total_training_steps * WARMUP_RATIO)
     scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=warmup_steps, num_training_steps=total_training_steps)
 
-    # ----------------------------
-    # Funciones de evaluación
-    # ----------------------------
+
     @torch.no_grad()
     def evaluate(model, dataloader, device):
         model.eval()
@@ -318,9 +298,8 @@ def run_experiment(SEED, OUTPUT_DIR):
         return metrics
 
 
-    # ----------------------------
-    # Extracción de embeddings (CLS token del último hidden state)
-    # ----------------------------
+    # First-token representations from the final hidden layer
+
     @torch.no_grad()
     def extract_embeddings(model, dataloader, device):
         model.eval()
@@ -338,7 +317,7 @@ def run_experiment(SEED, OUTPUT_DIR):
 
     @torch.no_grad()
     def predict_duda(model, texts, tokenizer, device, batch_size=4):
-        """Ejecuta predicción de autor para los chunks de la comedia dudosa."""
+        """Return disputed-play predictions, representations and logits."""
         model.eval()
         duda_dataset      = TextDatasetNoLabel(texts, tokenizer, max_length=MAX_LENGTH)
         collator_no_label = DataCollatorWithPadding(tokenizer=tokenizer, return_tensors="pt")
@@ -362,9 +341,6 @@ def run_experiment(SEED, OUTPUT_DIR):
         return pred_authors, all_embeddings, all_logits
 
 
-    # ----------------------------
-    # Historial para plotting
-    # ----------------------------
     history = {
         "train_loss":    [],
         "val_loss":      [],
@@ -374,9 +350,9 @@ def run_experiment(SEED, OUTPUT_DIR):
         "test_f1":       []
     }
 
-    # ----------------------------
-    # Bucle de entrenamiento
-    # ----------------------------
+
+    # Training
+
     best_val_metric   = -float("inf")
     best_checkpoint   = None
     epochs_no_improve = 0
@@ -456,7 +432,7 @@ def run_experiment(SEED, OUTPUT_DIR):
                     epochs_no_improve += 1
                     print(f"No mejora en '{metric_key}'. epochs_no_improve = {epochs_no_improve}/{EARLY_STOPPING_PATIENCE}")
 
-            # Guardar gráfico y JSON de historial
+
             png_path  = os.path.join(OUTPUT_DIR, "training_progress.png")
             json_path = os.path.join(OUTPUT_DIR, "training_history.json")
             with open(json_path, "w", encoding="utf-8") as jf:
@@ -488,18 +464,16 @@ def run_experiment(SEED, OUTPUT_DIR):
                 print(f"Early stopping: no hubo mejora en {EARLY_STOPPING_PATIENCE} épocas. Terminando entrenamiento.")
                 break
 
-    # ----------------------------
-    # Cargar el mejor modelo
-    # ----------------------------
+
     if best_checkpoint is not None and os.path.isdir(best_checkpoint):
         print("Cargando mejor checkpoint para evaluación final:", best_checkpoint)
         model = AutoModelForSequenceClassification.from_pretrained(best_checkpoint).to(device)
     else:
         print("No se encontró best_checkpoint; se utilizará el modelo actual.")
 
-    # ----------------------------
-    # Evaluación final
-    # ----------------------------
+
+    # Final evaluation
+
     best_val_metrics = evaluate(model, eval_dataloader, device)
     print("Evaluación en VALIDACIÓN (mejor modelo):", {k: v for k, v in best_val_metrics.items() if k not in ("all_logits", "all_labels")})
 
@@ -512,12 +486,10 @@ def run_experiment(SEED, OUTPUT_DIR):
         history["test_accuracy"].append(test_metrics.get("accuracy", None))
         history["test_f1"].append(test_metrics.get("f1_macro", None))
 
-    # -------------------------------------------------------
-    # MÉTRICAS POR COMEDIA — VOTACIÓN MAYORITARIA
-    # -------------------------------------------------------
+
     label_names = [id2author[i] for i in range(len(id2author))]
 
-    # --- VALIDACIÓN ---
+
     val_chunk_preds      = np.argmax(best_val_metrics["all_logits"], axis=1)
     val_chunk_labels     = best_val_metrics["all_labels"]
     val_chunk_pred_names = [id2author[i] for i in val_chunk_preds]
@@ -537,7 +509,7 @@ def run_experiment(SEED, OUTPUT_DIR):
         output_dir    = OUTPUT_DIR
     )
 
-    # --- TEST ---
+
     test_chunk_preds      = np.argmax(test_metrics["all_logits"], axis=1)
     test_chunk_labels     = test_metrics["all_labels"]
     test_chunk_pred_names = [id2author[i] for i in test_chunk_preds]
@@ -556,7 +528,7 @@ def run_experiment(SEED, OUTPUT_DIR):
         output_dir    = OUTPUT_DIR
     )
 
-    # Guardar plot final y json
+
     png_path  = os.path.join(OUTPUT_DIR, "training_progress.png")
     json_path = os.path.join(OUTPUT_DIR, "training_history.json")
     with open(json_path, "w", encoding="utf-8") as jf:
@@ -582,11 +554,9 @@ def run_experiment(SEED, OUTPUT_DIR):
     plt.savefig(png_path)
     plt.close()
 
-    # ----------------------------
-    # ============================
-    # VISUALIZACIÓN DE EMBEDDINGS
-    # ============================
-    # ----------------------------
+
+    # Representation visualizations
+
 
     print("\n[VIZ] Extrayendo embeddings del conjunto de test (chunks conocidos)...")
 
@@ -598,11 +568,11 @@ def run_experiment(SEED, OUTPUT_DIR):
     )
     emb_known = extract_embeddings(model, test_dataloader_viz, device)
 
-    # Metadatos de chunks conocidos
+
     authors_known  = test_df["autor"].tolist()
     comedias_known = test_df["comedia"].tolist()
 
-    # --- Comedia dudosa (CSV externo) ---
+
     print(f"[VIZ] Prediciendo autor para {len(duda_df)} chunk(s) de la comedia dudosa...")
     duda_predicted_authors, emb_duda, duda_logits = predict_duda(
         model, duda_df["texto"].tolist(), tokenizer, device,
@@ -610,14 +580,14 @@ def run_experiment(SEED, OUTPUT_DIR):
     )
     duda_comedias = duda_df["comedia"].tolist()
 
-    # Guardar predicciones DUDA
+
     duda_preds_df = duda_df.copy()
     duda_preds_df["predicted_autor"] = duda_predicted_authors
     duda_preds_path = os.path.join(OUTPUT_DIR, "duda_predictions.csv")
     duda_preds_df.to_csv(duda_preds_path, index=False)
     print(f"[VIZ] Predicciones para chunks DUDA guardadas en: {duda_preds_path}")
 
-    # Votación mayoritaria para la comedia dudosa
+
     duda_vote = pd.Series(duda_predicted_authors).value_counts()
     duda_voted_author = duda_vote.idxmax()
     print(f"\n[DUDA] Votación mayoritaria sobre la comedia dudosa:")
@@ -627,18 +597,18 @@ def run_experiment(SEED, OUTPUT_DIR):
         pct = count / len(duda_predicted_authors) * 100
         print(f"    {autor:12s}: {count:3d} chunks  ({pct:.1f}%)")
 
-    # --- Combinar todos los embeddings ---
+
     all_embeddings = np.concatenate([emb_known, emb_duda], axis=0)
     all_authors    = authors_known + ["DUDA"] * len(duda_df)
     all_comedias   = comedias_known + duda_comedias
 
     print(f"[VIZ] Total embeddings: {len(all_embeddings)} ({len(emb_known)} conocidos + {len(emb_duda)} DUDA)")
 
-    # --- Asignar marcadores por comedia ---
+
     unique_comedias = sorted(set(all_comedias))
     comedia2marker  = {c: MARKER_STYLES[i % len(MARKER_STYLES)] for i, c in enumerate(unique_comedias)}
 
-    # --- Colores por autor ---
+
     colors = []
     for a in all_authors:
         matched = next((k for k in AUTHOR_COLORS if k.upper() == a.upper()), None)
@@ -658,7 +628,7 @@ def run_experiment(SEED, OUTPUT_DIR):
                 edgecolors="none"
             )
 
-        # Leyenda autores (colores)
+
         seen_authors = set()
         author_handles = []
         for a in all_authors:
@@ -670,7 +640,7 @@ def run_experiment(SEED, OUTPUT_DIR):
                 author_handles.append(mpatches.Patch(color=color, label=key))
         author_handles.sort(key=lambda h: h.get_label())
 
-        # Leyenda comedias (marcadores)
+
         comedia_handles = [
             Line2D([0], [0], marker=comedia2marker[c], color="gray",
                    linestyle="None", markersize=7, label=c)
@@ -692,9 +662,6 @@ def run_experiment(SEED, OUTPUT_DIR):
         print(f"[VIZ] Guardado: {filename}")
 
 
-    # =====================
-    # PCA (2 componentes)
-    # =====================
     print("[VIZ] Calculando PCA...")
     pca = PCA(n_components=2, random_state=42)
     coords_pca = pca.fit_transform(all_embeddings)
@@ -709,11 +676,9 @@ def run_experiment(SEED, OUTPUT_DIR):
         comedia2marker=comedia2marker
     )
 
-    # =====================
-    # PCA + UMAP
-    # =====================
+
     try:
-        import umap  # umap-learn
+        import umap
         print(f"[VIZ] Calculando UMAP sobre reducción PCA ({PCA_DIMS_FOR_UMAP} componentes)...")
 
         n_pca_umap = min(PCA_DIMS_FOR_UMAP, all_embeddings.shape[1], all_embeddings.shape[0] - 1)
@@ -737,12 +702,9 @@ def run_experiment(SEED, OUTPUT_DIR):
         print("       Instálalo con: pip install umap-learn")
 
 
-    # =====================
-    # Dendrograma de comedias
-    # =====================
     print("[VIZ] Calculando dendrograma de comedias...")
 
-    # Centroides de chunks conocidos
+
     comedias_known_arr = np.array(comedias_known)
     emb_known_arr      = emb_known
 
@@ -754,7 +716,7 @@ def run_experiment(SEED, OUTPUT_DIR):
         autor_counts = pd.Series(np.array(authors_known)[mask]).value_counts()
         comedia_authors_map[comedia] = autor_counts.idxmax()
 
-    # Añadir centroide de la comedia dudosa
+
     for comedia in sorted(set(duda_comedias)):
         duda_mask = np.array(duda_comedias) == comedia
         comedia_centroids[comedia]   = emb_duda[duda_mask].mean(axis=0)
@@ -803,9 +765,6 @@ def run_experiment(SEED, OUTPUT_DIR):
     print(f"[VIZ] Dendrograma guardado en: {dendro_path}")
 
 
-    # ----------------------------
-    # Guardar métricas y resumen final
-    # ----------------------------
     output_info = {
         "best_checkpoint":           best_checkpoint if best_checkpoint is not None else "No checkpoint registrado",
         "trained_epochs":            trained_epochs,
@@ -859,7 +818,7 @@ def run_experiment(SEED, OUTPUT_DIR):
     print(f"DUDA → autor predicho por votación mayoritaria: {duda_voted_author}")
     print("Código terminado")
 
-    # Exportar métricas numéricas del mejor modelo para la agregación entre runs.
+
     metrics = {}
     for split, values in (("val", best_val_metrics), ("test", test_metrics)):
         for metric in ("loss", "accuracy", "f1_macro"):
@@ -868,7 +827,7 @@ def run_experiment(SEED, OUTPUT_DIR):
                 "test_comedy_vote_accuracy", "test_comedy_vote_f1_macro"):
         metrics[key] = float(output_info[key])
     metrics["trained_epochs"] = int(trained_epochs)
-    # Incluir los autores con cero votos para no sesgar las medias.
+    # Include zero-vote authors in the run averages.
     duda_results = []
     for comedia, group in duda_preds_df.groupby("comedia", sort=True):
         counts = group["predicted_autor"].value_counts()
@@ -884,7 +843,7 @@ def run_experiment(SEED, OUTPUT_DIR):
 
 
 def aggregate_runs(results, output_dir):
-    """Media y desviación típica muestral (ddof=1) entre las cinco semillas."""
+    """Summarize the five seeds using means and sample standard deviations (ddof=1)."""
     if len(results) != len(SEEDS) or {r["seed"] for r in results} != set(SEEDS):
         raise ValueError("El resumen requiere las cinco semillas completas y distintas.")
     output_dir = Path(output_dir)
@@ -924,14 +883,14 @@ def main():
         run_experiment(args.seed, str(root / f"seed_{args.seed}"))
         return
 
-    # No mezclar resultados de experimentos distintos ni sobrescribir runs anteriores.
+
     if root.exists() and any(root.iterdir()):
         raise FileExistsError(f"La carpeta de resultados ya contiene archivos: {root}")
     root.mkdir(parents=True, exist_ok=True)
     results = []
     for seed in SEEDS:
         print(f"\n=== Run semilla {seed} ({SEEDS.index(seed) + 1}/{len(SEEDS)}) ===", flush=True)
-        # Proceso independiente: libera modelo, optimizador y memoria GPU entre runs.
+        # Run each seed in a separate process to release GPU resources.
         with (root / f"seed_{seed}.log").open("w", encoding="utf-8") as log:
             subprocess.run([sys.executable, "-u", str(Path(__file__).resolve()),
                             "--seed", str(seed)], stdout=log, stderr=subprocess.STDOUT,

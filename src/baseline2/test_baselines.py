@@ -1,4 +1,4 @@
-"""Small numerical checks for the scientific assumptions, without the corpus."""
+"""Numerical tests for baseline features, classifiers and data separation."""
 
 from collections import Counter
 import unittest
@@ -26,7 +26,7 @@ class BaselineTests(unittest.TestCase):
         x, fitted = fit_features(train, n_mfw=3)
         self.assertEqual(fitted[0], ["b", "a"])
         assert_allclose(x, [[-1, 1], [1, -1]])
-        # Unseen words affect the denominator but never enter the vocabulary.
+        # Out-of-vocabulary words contribute to the denominator.
         assert_allclose(transform([sample(b=1, unseen=3)], fitted), [[-1, -3]])
         assert_allclose(fitted[1], [0.3125, 0.1875])
         assert_allclose(fitted[2], [0.0625, 0.0625])
@@ -51,10 +51,10 @@ class BaselineTests(unittest.TestCase):
     def test_validation_selects_c_and_breaks_ties(self):
         train = np.array([[-2.], [-1.], [1.], [2.]])
         authors = np.array(["A", "A", "B", "B"])
-        # All three values tie on this separable validation set.
+        # All candidate values tie on validation accuracy.
         model = select_svm(train, authors, np.array([[-3.], [3.]]), ["A", "B"])
         self.assertEqual(model.C, 0.1)
-        # Controlled scores also check that the best candidate need not be first.
+        # Check selection when the best candidate is not first.
         with patch("baselines.accuracy_score", side_effect=[0.5, 1.0, 0.5]):
             model = select_svm(train, authors, np.array([[-3.], [3.]]), ["A", "B"])
         self.assertEqual(model.C, 1.0)
