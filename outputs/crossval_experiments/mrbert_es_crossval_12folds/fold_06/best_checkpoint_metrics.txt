@@ -1,0 +1,19 @@
+Best checkpoint metrics and training info
+=========================================
+
+Best checkpoint: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_06/best_model
+Epochs trained:  42
+
+Validation metrics:
+{
+  "loss": 0.757206122410466,
+  "accuracy": 0.8562367864693446,
+  "f1_macro": 0.8496936084211151
+}
+
+Test metrics:
+{
+  "loss": 0.8790941856415663,
+  "accuracy": 0.8145833333333333,
+  "f1_macro": 0.8094762671179903
+}

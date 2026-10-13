@@ -1,0 +1,90 @@
+{
+  "experiment": "beto_crossval_12folds",
+  "source_script": "src/run_crossval.py",
+  "status": "Documentary configuration; scripts do not load this file.",
+  "provenance": {
+    "shared_hyperparameters": "Extracted from the current scripts; shared across cross-validation models as confirmed by the author. Not independently verified against historical runs.",
+    "model_identifier": "Current scripts",
+    "learning_rate": "Confirmed by the author; kept fixed across all twelve cross-validation iterations."
+  },
+  "MODEL_NAME": "dccuchile/bert-base-spanish-wwm-cased",
+  "TOKENIZER_NAME": "dccuchile/bert-base-spanish-wwm-cased",
+  "MODEL_REVISION": null,
+  "TOKENIZER_REVISION": null,
+  "paths": {
+    "FOLDS_DIR": "data/crossval_12folds_mroberta_tokenized",
+    "OUTPUT_DIR": "outputs/crossval_experiments/beto_crossval_12folds"
+  },
+  "training": {
+    "EARLY_STOPPING_PATIENCE": 10,
+    "NUM_TRAIN_EPOCHS": 45,
+    "PER_DEVICE_TRAIN_BATCH_SIZE": 4,
+    "GRAD_ACCUM_STEPS": 4,
+    "WARMUP_RATIO": 0.1,
+    "MAX_LENGTH": 512,
+    "MAX_GRAD_NORM": 1.0,
+    "LOGGING_STEPS": 50,
+    "EVAL_STRATEGY": "epoch",
+    "METRIC_FOR_BEST": "eval_accuracy",
+    "LEARNING_RATE": 4e-06,
+    "SEED": 44
+  },
+  "optimizer": {
+    "name": "torch.optim.AdamW",
+    "weight_decay": 0.01,
+    "weight_decay_exceptions": {
+      "name_contains": [
+        "bias",
+        "LayerNorm.weight"
+      ],
+      "weight_decay": 0.0
+    },
+    "other_arguments": "PyTorch defaults; exact historical package version unknown"
+  },
+  "scheduler": {
+    "name": "linear_with_warmup",
+    "total_steps": "ceil(number_of_training_batches / GRAD_ACCUM_STEPS) * NUM_TRAIN_EPOCHS",
+    "warmup_steps": "int(total_steps * WARMUP_RATIO)"
+  },
+  "tokenization": {
+    "truncation": true,
+    "padding": "dynamic per batch",
+    "fragmentation_tokenizer": "BSC-LT/mRoBERTa",
+    "fragmentation_chunk_size": 510,
+    "fragmentation_stride": 0
+  },
+  "checkpoint_selection": {
+    "dataset": "validation",
+    "metric": "accuracy",
+    "direction": "maximize",
+    "improvement": "strictly greater; retain earlier checkpoint on ties",
+    "early_stopping": "10 consecutive epochs without improvement",
+    "reload_best_for_final_evaluation": true
+  },
+  "labels": {
+    "0": "ALARCON",
+    "1": "CALDERON",
+    "2": "CASTRO",
+    "3": "CERVANTES",
+    "4": "LOPE",
+    "5": "MONTALBAN",
+    "6": "MORETO",
+    "7": "ROJAS",
+    "8": "TIRSO"
+  },
+  "missing_fields": [
+    "MODEL_REVISION",
+    "TOKENIZER_REVISION"
+  ],
+  "partitioning": {
+    "n_folds": 12,
+    "test_fold": "i",
+    "validation_fold": "(i + 1) % n_folds",
+    "training_folds": "all remaining folds",
+    "unit": "play",
+    "aggregation": [
+      "hard voting: most predicted class",
+      "soft voting: sum of fragment class probabilities"
+    ]
+  }
+}

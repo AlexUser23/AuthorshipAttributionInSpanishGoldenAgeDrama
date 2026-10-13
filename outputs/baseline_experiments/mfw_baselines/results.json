@@ -1,0 +1,103 @@
+{
+  "protocol": {
+    "folds": 12,
+    "train_folds": 10,
+    "validation_fold": "(test_fold + 1) % 12",
+    "mfw": 500,
+    "culling": 0,
+    "standard_deviation_ddof": 0,
+    "svm": "SVC(kernel='linear'), one-vs-one",
+    "svm_c_candidates": [
+      0.1,
+      1.0,
+      10.0
+    ],
+    "aggregation": "pooled held-out predictions"
+  },
+  "reproducibility": {
+    "python": "3.10.21",
+    "packages": {
+      "numpy": "2.2.6",
+      "scipy": "1.15.2",
+      "scikit-learn": "1.7.2",
+      "joblib": "1.5.3",
+      "threadpoolctl": "3.6.0"
+    },
+    "corpus_sha256": "3348d21ee77e88b2f42d4d8ff8aabc26e5cda1c0b0869c6409262833a1335821",
+    "code_sha256": "04aab5a8aa796a988548bc26a904dda16493f2f4c6271e98e757184157b8aad6"
+  },
+  "results": {
+    "fragment": {
+      "n_samples": 5315,
+      "n_authors": 9,
+      "svm_c_by_test_fold": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      "scores": {
+        "classic_delta": {
+          "accuracy": 0.22841015992474129,
+          "macro_f1": 0.19003155616212503
+        },
+        "cosine_delta": {
+          "accuracy": 0.2889934148635936,
+          "macro_f1": 0.2822138835050158
+        },
+        "linear_svm": {
+          "accuracy": 0.6082784571966133,
+          "macro_f1": 0.6085326256070152
+        },
+        "majority": {
+          "accuracy": 0.12474129821260584,
+          "macro_f1": 0.04294102628967776
+        }
+      }
+    },
+    "full_play": {
+      "n_samples": 100,
+      "n_authors": 9,
+      "svm_c_by_test_fold": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1
+      ],
+      "scores": {
+        "classic_delta": {
+          "accuracy": 0.99,
+          "macro_f1": 0.9907246376811594
+        },
+        "cosine_delta": {
+          "accuracy": 0.97,
+          "macro_f1": 0.9695974235104671
+        },
+        "linear_svm": {
+          "accuracy": 0.99,
+          "macro_f1": 0.9907246376811594
+        },
+        "majority": {
+          "accuracy": 0.12,
+          "macro_f1": 0.023809523809523808
+        }
+      }
+    }
+  }
+}

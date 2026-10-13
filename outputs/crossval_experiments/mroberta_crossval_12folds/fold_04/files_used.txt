@@ -1,0 +1,13 @@
+test_file: /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_04.csv
+val_file: /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_05.csv
+train_files:
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_00.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_01.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_02.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_03.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_06.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_07.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_08.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_09.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_10.csv
+  /home/usc/le/abs/CorpusTFG_Cuellar/Folds12_roberta_noorg/fold_11.csv

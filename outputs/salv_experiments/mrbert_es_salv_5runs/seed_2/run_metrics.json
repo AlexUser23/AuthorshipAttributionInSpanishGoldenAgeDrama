@@ -1,0 +1,53 @@
+{
+  "seed": 2,
+  "metrics": {
+    "val_loss": 1.6331568303033968,
+    "val_accuracy": 0.7226890756302521,
+    "val_f1_macro": 0.7191757177069984,
+    "test_loss": 1.6340214052262747,
+    "test_accuracy": 0.7191435768261965,
+    "test_f1_macro": 0.724854483332344,
+    "val_comedy_vote_accuracy": 0.8,
+    "val_comedy_vote_f1_macro": 0.7866666666666667,
+    "test_comedy_vote_accuracy": 0.8333333333333334,
+    "test_comedy_vote_f1_macro": 0.8236874236874236,
+    "trained_epochs": 19
+  },
+  "duda": [
+    {
+      "comedia": "DUDA_Siempre ayuda la verdad",
+      "autor": "Alarcón",
+      "votos": 1,
+      "porcentaje": 2.0408163265306123,
+      "ganador": false
+    },
+    {
+      "comedia": "DUDA_Siempre ayuda la verdad",
+      "autor": "Belmonte",
+      "votos": 11,
+      "porcentaje": 22.448979591836736,
+      "ganador": false
+    },
+    {
+      "comedia": "DUDA_Siempre ayuda la verdad",
+      "autor": "Claramonte",
+      "votos": 3,
+      "porcentaje": 6.122448979591836,
+      "ganador": false
+    },
+    {
+      "comedia": "DUDA_Siempre ayuda la verdad",
+      "autor": "Lope",
+      "votos": 33,
+      "porcentaje": 67.34693877551021,
+      "ganador": true
+    },
+    {
+      "comedia": "DUDA_Siempre ayuda la verdad",
+      "autor": "Tirso",
+      "votos": 1,
+      "porcentaje": 2.0408163265306123,
+      "ganador": false
+    }
+  ]
+}

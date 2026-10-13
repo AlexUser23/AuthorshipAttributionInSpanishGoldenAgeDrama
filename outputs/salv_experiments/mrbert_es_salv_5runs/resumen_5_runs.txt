@@ -1,0 +1,26 @@
+Cinco runs independientes; mismas particiones; semillas 1, 2, 3, 4, 5.
+Desviacion tipica muestral (ddof=1). Accuracy y F1 en escala 0-1.
+DUDA: porcentaje de votos de fragmentos, no probabilidad de autoria.
+
+                               media  desviacion_tipica  n_runs
+metrica                                                        
+val_loss                    1.213228           0.303583       5
+val_accuracy                0.742017           0.022154       5
+val_f1_macro                0.739962           0.023658       5
+test_loss                   1.337272           0.316252       5
+test_accuracy               0.735894           0.010967       5
+test_f1_macro               0.740933           0.012724       5
+val_comedy_vote_accuracy    0.840000           0.054772       5
+val_comedy_vote_f1_macro    0.832000           0.056253       5
+test_comedy_vote_accuracy   0.893333           0.043461       5
+test_comedy_vote_f1_macro   0.896410           0.045658       5
+trained_epochs             18.200000           1.923538       5
+
+DUDA
+                                         votos_media  votos_std  porcentaje_media  porcentaje_std  runs_ganador  n_runs
+comedia                      autor                                                                                     
+DUDA_Siempre ayuda la verdad Alarcón             1.0   1.224745          2.040816        2.499479             0       5
+                             Belmonte            6.0   4.062019         12.244898        8.289835             0       5
+                             Claramonte          5.6   3.209361         11.428571        6.549717             0       5
+                             Lope               32.6   7.092249         66.530612       14.473978             5       5
+                             Tirso               3.8   2.167948          7.755102        4.424384             0       5

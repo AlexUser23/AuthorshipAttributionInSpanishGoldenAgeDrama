@@ -1,0 +1,19 @@
+Best checkpoint metrics and training info
+=========================================
+
+Best checkpoint: /mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_09/best_model
+Epochs trained:  38
+
+Validation metrics:
+{
+  "loss": 3.115846403702815,
+  "accuracy": 0.6172506738544474,
+  "f1_macro": 0.46289824160440446
+}
+
+Test metrics:
+{
+  "loss": 2.2346192245020875,
+  "accuracy": 0.7258485639686684,
+  "f1_macro": 0.575473216605568
+}

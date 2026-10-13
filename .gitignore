@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.Rhistory
+.RData
+.DS_Store
+.ipynb_checkpoints/
+/dist/
+/data/*_regenerated/
+# Local training artifacts; metrics and predictions remain publishable.
+/outputs/**/best_model/
+/outputs/**/checkpoint-*/
+/outputs/**/representations/
+/outputs/**/*.log
+/outputs/**/*.png

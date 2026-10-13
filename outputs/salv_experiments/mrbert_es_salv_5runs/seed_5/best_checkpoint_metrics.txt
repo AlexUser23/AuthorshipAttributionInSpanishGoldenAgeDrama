@@ -1,0 +1,39 @@
+Best checkpoint metrics and training info
+=========================================
+
+Best checkpoint path: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/Experimento_SALV/MrBERT-es_5runs_8-3-2_seed44-1...5-2_2/seed_5/best_model
+Trained epochs (approx): 19
+
+--- Chunk-level metrics (best model) ---
+Validation metrics (JSON):
+{
+  "accuracy": 0.7647058823529411,
+  "f1_macro": 0.7685370949625089,
+  "loss": 1.082300867021423
+}
+
+Test metrics (final evaluation, JSON):
+{
+  "accuracy": 0.7449622166246851,
+  "f1_macro": 0.7473742747419369,
+  "loss": 1.2388368612145637
+}
+
+--- Comedy-level metrics (majority vote) ---
+VAL  comedy accuracy : 0.9000
+VAL  comedy F1-macro : 0.8933
+TEST comedy accuracy : 0.9333
+TEST comedy F1-macro : 0.9331
+
+--- Comedia dudosa (DUDA) ---
+Chunks totales DUDA  : 49
+Autor predicho (voto mayoritario): Lope
+Distribución de votos por chunk:
+  Lope        :  33 chunks  (67.3%)
+  Belmonte    :   5 chunks  (10.2%)
+  Tirso       :   4 chunks  (8.2%)
+  Claramonte  :   4 chunks  (8.2%)
+  Alarcón     :   3 chunks  (6.1%)
+
+Training history JSON: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/Experimento_SALV/MrBERT-es_5runs_8-3-2_seed44-1...5-2_2/seed_5/training_history.json
+Training progress plot: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/Experimento_SALV/MrBERT-es_5runs_8-3-2_seed44-1...5-2_2/seed_5/training_progress.png

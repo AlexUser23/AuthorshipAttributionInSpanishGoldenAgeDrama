@@ -1,0 +1,9 @@
+{
+  "hard_accuracy": 1.0,
+  "hard_f1_macro": 1.0,
+  "hard_f1_micro": 1.0,
+  "soft_accuracy": 1.0,
+  "soft_f1_macro": 1.0,
+  "soft_f1_micro": 1.0,
+  "n_comedias": 9
+}

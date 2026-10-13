@@ -1,0 +1,1 @@
+Atribución por fragmento de Siempre ayuda la verdad. Cada bloque representa uno de los 49 fragmentos, en orden textual; los colores muestran la proporción de votos de cada autor entre cinco ejecuciones con distintas semillas. Todos los bloques tienen igual ancho, independientemente de su longitud textual. Las proporciones corresponden a votos, no a probabilidades de autoría.

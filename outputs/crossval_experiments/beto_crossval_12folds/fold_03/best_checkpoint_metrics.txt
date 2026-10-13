@@ -1,0 +1,19 @@
+Best checkpoint metrics and training info
+=========================================
+
+Best checkpoint: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_03/best_model
+Epochs trained:  37
+
+Validation metrics:
+{
+  "loss": 1.8955895961113411,
+  "accuracy": 0.6981132075471698,
+  "f1_macro": 0.6940525137035034
+}
+
+Test metrics:
+{
+  "loss": 2.8107523195043242,
+  "accuracy": 0.6054852320675106,
+  "f1_macro": 0.6001432319400771
+}

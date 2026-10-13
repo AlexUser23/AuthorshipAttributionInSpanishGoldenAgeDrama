@@ -1,0 +1,287 @@
+{
+  "seed": 44,
+  "deterministic_algorithms": false,
+  "n_folds": 12,
+  "per_fold": [
+    {
+      "fold_idx": 0,
+      "seed": 44,
+      "test_file": "fold_00.csv",
+      "val_file": "fold_01.csv",
+      "trained_epochs": 32,
+      "best_validation_f1": 0.7892908189139635,
+      "best_validation_accuracy": 0.7805907172995781,
+      "test_f1_chunk": 0.775013405103223,
+      "test_accuracy_chunk": 0.7761194029850746,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_00/best_model"
+    },
+    {
+      "fold_idx": 1,
+      "seed": 44,
+      "test_file": "fold_01.csv",
+      "val_file": "fold_02.csv",
+      "trained_epochs": 42,
+      "best_validation_f1": 0.7773271130813425,
+      "best_validation_accuracy": 0.7735849056603774,
+      "test_f1_chunk": 0.7526407429792266,
+      "test_accuracy_chunk": 0.7447257383966245,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_01/best_model"
+    },
+    {
+      "fold_idx": 2,
+      "seed": 44,
+      "test_file": "fold_02.csv",
+      "val_file": "fold_03.csv",
+      "trained_epochs": 35,
+      "best_validation_f1": 0.6355791563588763,
+      "best_validation_accuracy": 0.6455696202531646,
+      "test_f1_chunk": 0.7344935221234028,
+      "test_accuracy_chunk": 0.7316561844863732,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_02/best_model"
+    },
+    {
+      "fold_idx": 3,
+      "seed": 44,
+      "test_file": "fold_03.csv",
+      "val_file": "fold_04.csv",
+      "trained_epochs": 37,
+      "best_validation_f1": 0.6940525137035034,
+      "best_validation_accuracy": 0.6981132075471698,
+      "test_f1_chunk": 0.6001432319400771,
+      "test_accuracy_chunk": 0.6054852320675106,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_03/best_model"
+    },
+    {
+      "fold_idx": 4,
+      "seed": 44,
+      "test_file": "fold_04.csv",
+      "val_file": "fold_05.csv",
+      "trained_epochs": 40,
+      "best_validation_f1": 0.6108235397755358,
+      "best_validation_accuracy": 0.6339468302658486,
+      "test_f1_chunk": 0.6845543495250479,
+      "test_accuracy_chunk": 0.6960167714884696,
+      "test_f1_comedy_hard": 0.8518518518518517,
+      "test_accuracy_comedy_hard": 0.8888888888888888,
+      "test_f1_comedy_soft": 0.8518518518518517,
+      "test_accuracy_comedy_soft": 0.8888888888888888,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_04/best_model"
+    },
+    {
+      "fold_idx": 5,
+      "seed": 44,
+      "test_file": "fold_05.csv",
+      "val_file": "fold_06.csv",
+      "trained_epochs": 39,
+      "best_validation_f1": 0.6985329644979121,
+      "best_validation_accuracy": 0.7104166666666667,
+      "test_f1_chunk": 0.5985735607785316,
+      "test_accuracy_chunk": 0.6114519427402862,
+      "test_f1_comedy_hard": 0.7037037037037037,
+      "test_accuracy_comedy_hard": 0.7777777777777778,
+      "test_f1_comedy_soft": 0.7037037037037037,
+      "test_accuracy_comedy_soft": 0.7777777777777778,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_05/best_model"
+    },
+    {
+      "fold_idx": 6,
+      "seed": 44,
+      "test_file": "fold_06.csv",
+      "val_file": "fold_07.csv",
+      "trained_epochs": 29,
+      "best_validation_f1": 0.5634256108095896,
+      "best_validation_accuracy": 0.572938689217759,
+      "test_f1_chunk": 0.7282310855161059,
+      "test_accuracy_chunk": 0.725,
+      "test_f1_comedy_hard": 0.8518518518518517,
+      "test_accuracy_comedy_hard": 0.8888888888888888,
+      "test_f1_comedy_soft": 0.8518518518518517,
+      "test_accuracy_comedy_soft": 0.8888888888888888,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_06/best_model"
+    },
+    {
+      "fold_idx": 7,
+      "seed": 44,
+      "test_file": "fold_07.csv",
+      "val_file": "fold_08.csv",
+      "trained_epochs": 18,
+      "best_validation_f1": 0.5255697366805548,
+      "best_validation_accuracy": 0.6781002638522428,
+      "test_f1_chunk": 0.5198399544714014,
+      "test_accuracy_chunk": 0.5137420718816068,
+      "test_f1_comedy_hard": 0.7037037037037037,
+      "test_accuracy_comedy_hard": 0.7777777777777778,
+      "test_f1_comedy_soft": 0.5925925925925926,
+      "test_accuracy_comedy_soft": 0.6666666666666666,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_07/best_model"
+    },
+    {
+      "fold_idx": 8,
+      "seed": 44,
+      "test_file": "fold_08.csv",
+      "val_file": "fold_09.csv",
+      "trained_epochs": 31,
+      "best_validation_f1": 0.6185414731957676,
+      "best_validation_accuracy": 0.7780678851174935,
+      "test_f1_chunk": 0.545342063340711,
+      "test_accuracy_chunk": 0.7097625329815304,
+      "test_f1_comedy_hard": 0.6428571428571429,
+      "test_accuracy_comedy_hard": 0.7142857142857143,
+      "test_f1_comedy_soft": 0.6428571428571429,
+      "test_accuracy_comedy_soft": 0.7142857142857143,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_08/best_model"
+    },
+    {
+      "fold_idx": 9,
+      "seed": 44,
+      "test_file": "fold_09.csv",
+      "val_file": "fold_10.csv",
+      "trained_epochs": 25,
+      "best_validation_f1": 0.4554903562805962,
+      "best_validation_accuracy": 0.5714285714285714,
+      "test_f1_chunk": 0.5882435096918769,
+      "test_accuracy_chunk": 0.7441253263707572,
+      "test_f1_comedy_hard": 0.8095238095238094,
+      "test_accuracy_comedy_hard": 0.8571428571428571,
+      "test_f1_comedy_soft": 0.8095238095238094,
+      "test_accuracy_comedy_soft": 0.8571428571428571,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_09/best_model"
+    },
+    {
+      "fold_idx": 10,
+      "seed": 44,
+      "test_file": "fold_10.csv",
+      "val_file": "fold_11.csv",
+      "trained_epochs": 21,
+      "best_validation_f1": 0.6116138224060839,
+      "best_validation_accuracy": 0.7696476964769647,
+      "test_f1_chunk": 0.449580948000606,
+      "test_accuracy_chunk": 0.5660377358490566,
+      "test_f1_comedy_hard": 0.8095238095238094,
+      "test_accuracy_comedy_hard": 0.8571428571428571,
+      "test_f1_comedy_soft": 0.8095238095238094,
+      "test_accuracy_comedy_soft": 0.8571428571428571,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_10/best_model"
+    },
+    {
+      "fold_idx": 11,
+      "seed": 44,
+      "test_file": "fold_11.csv",
+      "val_file": "fold_00.csv",
+      "trained_epochs": 34,
+      "best_validation_f1": 0.7962516269834184,
+      "best_validation_accuracy": 0.7953091684434968,
+      "test_f1_chunk": 0.6221679265815373,
+      "test_accuracy_chunk": 0.7750677506775068,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/fold_11/best_model"
+    }
+  ],
+  "chunk": {
+    "val_f1": {
+      "mean": 0.648041561057262,
+      "std": 0.1025798962042863,
+      "min": 0.4554903562805962,
+      "max": 0.7962516269834184
+    },
+    "val_accuracy": {
+      "mean": 0.7006428518524443,
+      "std": 0.07774231936445108,
+      "min": 0.5714285714285714,
+      "max": 0.7953091684434968
+    },
+    "test_f1": {
+      "mean": 0.6332353583376455,
+      "std": 0.09790542974703556,
+      "min": 0.449580948000606,
+      "max": 0.775013405103223
+    },
+    "test_accuracy": {
+      "mean": 0.6832658908270665,
+      "std": 0.08324982125522606,
+      "min": 0.5137420718816068,
+      "max": 0.7761194029850746
+    },
+    "pooled": {
+      "accuracy": 0.6820319849482597,
+      "macro_f1": 0.6883556854829663,
+      "micro_f1": 0.6820319849482597,
+      "per_class_metrics_csv": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/BETO_seed44_4e6/per_class_metrics_global.csv"
+    }
+  },
+  "comedy": {
+    "hard": {
+      "test_f1": {
+        "mean": 0.8644179894179894,
+        "std": 0.12877704814929128,
+        "min": 0.6428571428571429,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.8968253968253969,
+        "std": 0.09923280070640768,
+        "min": 0.7142857142857143,
+        "max": 1.0
+      }
+    },
+    "soft": {
+      "test_f1": {
+        "mean": 0.8551587301587302,
+        "std": 0.14318795797331327,
+        "min": 0.5925925925925926,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.8875661375661376,
+        "std": 0.1139947673197698,
+        "min": 0.6666666666666666,
+        "max": 1.0
+      }
+    },
+    "pooled": {
+      "hard": {
+        "n_comedias": 100,
+        "accuracy": 0.9,
+        "macro_f1": 0.904052057948051,
+        "micro_f1": 0.9
+      },
+      "soft": {
+        "n_comedias": 100,
+        "accuracy": 0.89,
+        "macro_f1": 0.895709906272566,
+        "micro_f1": 0.89
+      }
+    }
+  }
+}

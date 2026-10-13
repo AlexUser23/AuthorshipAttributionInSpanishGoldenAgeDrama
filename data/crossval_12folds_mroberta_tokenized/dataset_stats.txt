@@ -1,0 +1,2 @@
+total_chunks,total_archivos,n_folds,chunk_size,stride
+5315,100,12,510,0

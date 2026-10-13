@@ -1,0 +1,287 @@
+{
+  "seed": 44,
+  "deterministic_algorithms": false,
+  "n_folds": 12,
+  "per_fold": [
+    {
+      "fold_idx": 0,
+      "seed": 44,
+      "test_file": "fold_00.csv",
+      "val_file": "fold_01.csv",
+      "trained_epochs": 17,
+      "best_validation_f1": 0.8205483462823379,
+      "best_validation_accuracy": 0.8227848101265823,
+      "test_f1_chunk": 0.863182883001284,
+      "test_accuracy_chunk": 0.8656716417910447,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_00/best_model"
+    },
+    {
+      "fold_idx": 1,
+      "seed": 44,
+      "test_file": "fold_01.csv",
+      "val_file": "fold_02.csv",
+      "trained_epochs": 21,
+      "best_validation_f1": 0.8993030806366468,
+      "best_validation_accuracy": 0.8972746331236897,
+      "test_f1_chunk": 0.7680003184751424,
+      "test_accuracy_chunk": 0.7784810126582279,
+      "test_f1_comedy_hard": 0.8518518518518517,
+      "test_accuracy_comedy_hard": 0.8888888888888888,
+      "test_f1_comedy_soft": 0.8518518518518517,
+      "test_accuracy_comedy_soft": 0.8888888888888888,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_01/best_model"
+    },
+    {
+      "fold_idx": 2,
+      "seed": 44,
+      "test_file": "fold_02.csv",
+      "val_file": "fold_03.csv",
+      "trained_epochs": 20,
+      "best_validation_f1": 0.8995668800278713,
+      "best_validation_accuracy": 0.8987341772151899,
+      "test_f1_chunk": 0.8737864641212676,
+      "test_accuracy_chunk": 0.8721174004192872,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_02/best_model"
+    },
+    {
+      "fold_idx": 3,
+      "seed": 44,
+      "test_file": "fold_03.csv",
+      "val_file": "fold_04.csv",
+      "trained_epochs": 22,
+      "best_validation_f1": 0.8604782211806815,
+      "best_validation_accuracy": 0.8616352201257862,
+      "test_f1_chunk": 0.8946650523486769,
+      "test_accuracy_chunk": 0.8945147679324894,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_03/best_model"
+    },
+    {
+      "fold_idx": 4,
+      "seed": 44,
+      "test_file": "fold_04.csv",
+      "val_file": "fold_05.csv",
+      "trained_epochs": 28,
+      "best_validation_f1": 0.7785326984274251,
+      "best_validation_accuracy": 0.7730061349693251,
+      "test_f1_chunk": 0.833034674505508,
+      "test_accuracy_chunk": 0.8322851153039832,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_04/best_model"
+    },
+    {
+      "fold_idx": 5,
+      "seed": 44,
+      "test_file": "fold_05.csv",
+      "val_file": "fold_06.csv",
+      "trained_epochs": 19,
+      "best_validation_f1": 0.8227721183702078,
+      "best_validation_accuracy": 0.8270833333333333,
+      "test_f1_chunk": 0.7887267972861393,
+      "test_accuracy_chunk": 0.7852760736196319,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_05/best_model"
+    },
+    {
+      "fold_idx": 6,
+      "seed": 44,
+      "test_file": "fold_06.csv",
+      "val_file": "fold_07.csv",
+      "trained_epochs": 42,
+      "best_validation_f1": 0.8496936084211151,
+      "best_validation_accuracy": 0.8562367864693446,
+      "test_f1_chunk": 0.8094762671179903,
+      "test_accuracy_chunk": 0.8145833333333333,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_06/best_model"
+    },
+    {
+      "fold_idx": 7,
+      "seed": 44,
+      "test_file": "fold_07.csv",
+      "val_file": "fold_08.csv",
+      "trained_epochs": 42,
+      "best_validation_f1": 0.6914764735764009,
+      "best_validation_accuracy": 0.8839050131926122,
+      "test_f1_chunk": 0.8613844879654053,
+      "test_accuracy_chunk": 0.8668076109936576,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_07/best_model"
+    },
+    {
+      "fold_idx": 8,
+      "seed": 44,
+      "test_file": "fold_08.csv",
+      "val_file": "fold_09.csv",
+      "trained_epochs": 22,
+      "best_validation_f1": 0.7195771218431573,
+      "best_validation_accuracy": 0.9190600522193212,
+      "test_f1_chunk": 0.6927116372845852,
+      "test_accuracy_chunk": 0.8944591029023746,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_08/best_model"
+    },
+    {
+      "fold_idx": 9,
+      "seed": 44,
+      "test_file": "fold_09.csv",
+      "val_file": "fold_10.csv",
+      "trained_epochs": 25,
+      "best_validation_f1": 0.4631079402475693,
+      "best_validation_accuracy": 0.628032345013477,
+      "test_f1_chunk": 0.6915110325942359,
+      "test_accuracy_chunk": 0.8825065274151436,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_09/best_model"
+    },
+    {
+      "fold_idx": 10,
+      "seed": 44,
+      "test_file": "fold_10.csv",
+      "val_file": "fold_11.csv",
+      "trained_epochs": 24,
+      "best_validation_f1": 0.576569904790861,
+      "best_validation_accuracy": 0.7344173441734417,
+      "test_f1_chunk": 0.46609811892038433,
+      "test_accuracy_chunk": 0.6145552560646901,
+      "test_f1_comedy_hard": 0.6428571428571429,
+      "test_accuracy_comedy_hard": 0.7142857142857143,
+      "test_f1_comedy_soft": 0.6428571428571429,
+      "test_accuracy_comedy_soft": 0.7142857142857143,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_10/best_model"
+    },
+    {
+      "fold_idx": 11,
+      "seed": 44,
+      "test_file": "fold_11.csv",
+      "val_file": "fold_00.csv",
+      "trained_epochs": 24,
+      "best_validation_f1": 0.8988677565667439,
+      "best_validation_accuracy": 0.8997867803837953,
+      "test_f1_chunk": 0.6312339521378152,
+      "test_accuracy_chunk": 0.8048780487804879,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/fold_11/best_model"
+    }
+  ],
+  "chunk": {
+    "val_f1": {
+      "mean": 0.7733745125309183,
+      "std": 0.1323611477187532,
+      "min": 0.4631079402475693,
+      "max": 0.8995668800278713
+    },
+    "val_accuracy": {
+      "mean": 0.8334963858621584,
+      "std": 0.08151492977153432,
+      "min": 0.628032345013477,
+      "max": 0.9190600522193212
+    },
+    "test_f1": {
+      "mean": 0.7644843071465361,
+      "std": 0.11993571931880627,
+      "min": 0.46609811892038433,
+      "max": 0.8946650523486769
+    },
+    "test_accuracy": {
+      "mean": 0.8255113242678626,
+      "std": 0.07482107041575702,
+      "min": 0.6145552560646901,
+      "max": 0.8945147679324894
+    },
+    "pooled": {
+      "accuracy": 0.8276575729068674,
+      "macro_f1": 0.8288159087385082,
+      "micro_f1": 0.8276575729068674,
+      "per_class_metrics_csv": "/mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/MrBERT/MrBERT12_44_1e5-es/per_class_metrics_global.csv"
+    }
+  },
+  "comedy": {
+    "hard": {
+      "test_f1": {
+        "mean": 0.9578924162257495,
+        "std": 0.10336920514681935,
+        "min": 0.6428571428571429,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.9669312169312169,
+        "std": 0.08208521949259368,
+        "min": 0.7142857142857143,
+        "max": 1.0
+      }
+    },
+    "soft": {
+      "test_f1": {
+        "mean": 0.9578924162257495,
+        "std": 0.10336920514681935,
+        "min": 0.6428571428571429,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.9669312169312169,
+        "std": 0.08208521949259368,
+        "min": 0.7142857142857143,
+        "max": 1.0
+      }
+    },
+    "pooled": {
+      "hard": {
+        "n_comedias": 100,
+        "accuracy": 0.97,
+        "macro_f1": 0.9720927220927221,
+        "micro_f1": 0.97
+      },
+      "soft": {
+        "n_comedias": 100,
+        "accuracy": 0.97,
+        "macro_f1": 0.9720927220927221,
+        "micro_f1": 0.97
+      }
+    }
+  }
+}

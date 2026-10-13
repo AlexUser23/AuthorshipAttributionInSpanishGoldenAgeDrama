@@ -1,0 +1,99 @@
+{
+  "experiment": "mrbert_es_salv_5runs",
+  "source_script": "src/run_salv_5runs.py",
+  "status": "Documentary configuration; scripts do not load this file.",
+  "provenance": {
+    "shared_hyperparameters": "Extracted from the current scripts; shared across cross-validation models as confirmed by the author. Not independently verified against historical runs.",
+    "model_identifier": "Current scripts",
+    "learning_rate": "Active assignment in source script"
+  },
+  "MODEL_NAME": "BSC-LT/MrBERT-es",
+  "TOKENIZER_NAME": "BSC-LT/MrBERT-es",
+  "MODEL_REVISION": null,
+  "TOKENIZER_REVISION": null,
+  "paths": {
+    "TRAIN_CSV": "data/salv_splits_seed44/train.csv",
+    "EVAL_CSV": "data/salv_splits_seed44/val.csv",
+    "TEST_CSV": "data/salv_splits_seed44/test.csv",
+    "DUDA_CSV": "data/salv_splits_seed44/duda.csv",
+    "OUTPUT_DIR": "outputs/salv_experiments/mrbert_es_salv_5runs"
+  },
+  "training": {
+    "EARLY_STOPPING_PATIENCE": 10,
+    "NUM_TRAIN_EPOCHS": 45,
+    "PER_DEVICE_TRAIN_BATCH_SIZE": 4,
+    "GRAD_ACCUM_STEPS": 4,
+    "WARMUP_RATIO": 0.1,
+    "MAX_LENGTH": 512,
+    "MAX_GRAD_NORM": 1.0,
+    "LOGGING_STEPS": 50,
+    "EVAL_STRATEGY": "epoch",
+    "METRIC_FOR_BEST": "eval_accuracy",
+    "LEARNING_RATE": 1e-05,
+    "SEEDS": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "SAVE_STRATEGY": "epoch",
+    "SAVE_TOTAL_LIMIT": 2
+  },
+  "optimizer": {
+    "name": "torch.optim.AdamW",
+    "weight_decay": 0.01,
+    "weight_decay_exceptions": {
+      "name_contains": [
+        "bias",
+        "LayerNorm.weight"
+      ],
+      "weight_decay": 0.0
+    },
+    "other_arguments": "PyTorch defaults; exact historical package version unknown"
+  },
+  "scheduler": {
+    "name": "linear_with_warmup",
+    "total_steps": "ceil(number_of_training_batches / GRAD_ACCUM_STEPS) * NUM_TRAIN_EPOCHS",
+    "warmup_steps": "int(total_steps * WARMUP_RATIO)"
+  },
+  "tokenization": {
+    "truncation": true,
+    "padding": "dynamic per batch",
+    "fragmentation_tokenizer": "BSC-LT/mRoBERTa",
+    "fragmentation_chunk_size": 510,
+    "fragmentation_stride": 0
+  },
+  "checkpoint_selection": {
+    "dataset": "validation",
+    "metric": "accuracy",
+    "direction": "maximize",
+    "improvement": "strictly greater; retain earlier checkpoint on ties",
+    "early_stopping": "10 consecutive epochs without improvement",
+    "reload_best_for_final_evaluation": true
+  },
+  "labels": {
+    "0": "Alarcón",
+    "1": "Belmonte",
+    "2": "Claramonte",
+    "3": "Lope",
+    "4": "Tirso"
+  },
+  "missing_fields": [
+    "MODEL_REVISION",
+    "TOKENIZER_REVISION"
+  ],
+  "partitioning": {
+    "split_seed": 44,
+    "test_plays_per_author": {
+      "Alarcón": 8,
+      "Belmonte": 3,
+      "Claramonte": 3,
+      "Lope": 8,
+      "Tirso": 8
+    },
+    "validation_plays_per_author": 2,
+    "disputed_author_key": "DUDA",
+    "source_script": "src/corpus_preprocessing/generate_salv_splits.py"
+  }
+}

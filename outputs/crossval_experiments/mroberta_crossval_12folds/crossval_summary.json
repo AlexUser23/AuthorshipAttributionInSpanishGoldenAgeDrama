@@ -1,0 +1,273 @@
+{
+  "n_folds": 12,
+  "per_fold": [
+    {
+      "fold_idx": 0,
+      "test_file": "fold_00.csv",
+      "val_file": "fold_01.csv",
+      "trained_epochs": 22,
+      "best_validation_f1": 0.7223136245065095,
+      "best_validation_accuracy": 0.7552742616033755,
+      "test_f1_chunk": 0.8576659051542044,
+      "test_accuracy_chunk": 0.8635394456289979,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_00/best_model"
+    },
+    {
+      "fold_idx": 1,
+      "test_file": "fold_01.csv",
+      "val_file": "fold_02.csv",
+      "trained_epochs": 34,
+      "best_validation_f1": 0.918858243657707,
+      "best_validation_accuracy": 0.9161425576519916,
+      "test_f1_chunk": 0.7566240440087643,
+      "test_accuracy_chunk": 0.7932489451476793,
+      "test_f1_comedy_hard": 0.8518518518518517,
+      "test_accuracy_comedy_hard": 0.8888888888888888,
+      "test_f1_comedy_soft": 0.8518518518518517,
+      "test_accuracy_comedy_soft": 0.8888888888888888,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_01/best_model"
+    },
+    {
+      "fold_idx": 2,
+      "test_file": "fold_02.csv",
+      "val_file": "fold_03.csv",
+      "trained_epochs": 34,
+      "best_validation_f1": 0.8703966787898789,
+      "best_validation_accuracy": 0.869198312236287,
+      "test_f1_chunk": 0.8683033378253012,
+      "test_accuracy_chunk": 0.8658280922431866,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_02/best_model"
+    },
+    {
+      "fold_idx": 3,
+      "test_file": "fold_03.csv",
+      "val_file": "fold_04.csv",
+      "trained_epochs": 41,
+      "best_validation_f1": 0.8977378940803844,
+      "best_validation_accuracy": 0.89937106918239,
+      "test_f1_chunk": 0.8181782302625416,
+      "test_accuracy_chunk": 0.8185654008438819,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_03/best_model"
+    },
+    {
+      "fold_idx": 4,
+      "test_file": "fold_04.csv",
+      "val_file": "fold_05.csv",
+      "trained_epochs": 38,
+      "best_validation_f1": 0.7629319131608371,
+      "best_validation_accuracy": 0.7689161554192229,
+      "test_f1_chunk": 0.8190065559245361,
+      "test_accuracy_chunk": 0.8218029350104822,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_04/best_model"
+    },
+    {
+      "fold_idx": 5,
+      "test_file": "fold_05.csv",
+      "val_file": "fold_06.csv",
+      "trained_epochs": 21,
+      "best_validation_f1": 0.8399746337414461,
+      "best_validation_accuracy": 0.8333333333333334,
+      "test_f1_chunk": 0.7118323192097725,
+      "test_accuracy_chunk": 0.7137014314928425,
+      "test_f1_comedy_hard": 0.8518518518518517,
+      "test_accuracy_comedy_hard": 0.8888888888888888,
+      "test_f1_comedy_soft": 0.8518518518518517,
+      "test_accuracy_comedy_soft": 0.8888888888888888,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_05/best_model"
+    },
+    {
+      "fold_idx": 6,
+      "test_file": "fold_06.csv",
+      "val_file": "fold_07.csv",
+      "trained_epochs": 45,
+      "best_validation_f1": 0.7843178829178289,
+      "best_validation_accuracy": 0.7991543340380549,
+      "test_f1_chunk": 0.8172259338283184,
+      "test_accuracy_chunk": 0.8104166666666667,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_06/best_model"
+    },
+    {
+      "fold_idx": 7,
+      "test_file": "fold_07.csv",
+      "val_file": "fold_08.csv",
+      "trained_epochs": 29,
+      "best_validation_f1": 0.6745663555511215,
+      "best_validation_accuracy": 0.862796833773087,
+      "test_f1_chunk": 0.8104281000593715,
+      "test_accuracy_chunk": 0.8181818181818182,
+      "test_f1_comedy_hard": 1.0,
+      "test_accuracy_comedy_hard": 1.0,
+      "test_f1_comedy_soft": 1.0,
+      "test_accuracy_comedy_soft": 1.0,
+      "n_comedias_test": 9,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_07/best_model"
+    },
+    {
+      "fold_idx": 8,
+      "test_file": "fold_08.csv",
+      "val_file": "fold_09.csv",
+      "trained_epochs": 33,
+      "best_validation_f1": 0.6735733579444552,
+      "best_validation_accuracy": 0.8381201044386423,
+      "test_f1_chunk": 0.6240850656547012,
+      "test_accuracy_chunk": 0.7757255936675461,
+      "test_f1_comedy_hard": 0.8095238095238094,
+      "test_accuracy_comedy_hard": 0.8571428571428571,
+      "test_f1_comedy_soft": 0.8095238095238094,
+      "test_accuracy_comedy_soft": 0.8571428571428571,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_08/best_model"
+    },
+    {
+      "fold_idx": 9,
+      "test_file": "fold_09.csv",
+      "val_file": "fold_10.csv",
+      "trained_epochs": 38,
+      "best_validation_f1": 0.46289824160440446,
+      "best_validation_accuracy": 0.6172506738544474,
+      "test_f1_chunk": 0.575473216605568,
+      "test_accuracy_chunk": 0.7258485639686684,
+      "test_f1_comedy_hard": 0.6428571428571429,
+      "test_accuracy_comedy_hard": 0.7142857142857143,
+      "test_f1_comedy_soft": 0.6428571428571429,
+      "test_accuracy_comedy_soft": 0.7142857142857143,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_09/best_model"
+    },
+    {
+      "fold_idx": 10,
+      "test_file": "fold_10.csv",
+      "val_file": "fold_11.csv",
+      "trained_epochs": 35,
+      "best_validation_f1": 0.5807830499829436,
+      "best_validation_accuracy": 0.7533875338753387,
+      "test_f1_chunk": 0.41539659732688095,
+      "test_accuracy_chunk": 0.5660377358490566,
+      "test_f1_comedy_hard": 0.619047619047619,
+      "test_accuracy_comedy_hard": 0.7142857142857143,
+      "test_f1_comedy_soft": 0.619047619047619,
+      "test_accuracy_comedy_soft": 0.7142857142857143,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_10/best_model"
+    },
+    {
+      "fold_idx": 11,
+      "test_file": "fold_11.csv",
+      "val_file": "fold_00.csv",
+      "trained_epochs": 39,
+      "best_validation_f1": 0.903399333476213,
+      "best_validation_accuracy": 0.9040511727078892,
+      "test_f1_chunk": 0.6058162526943103,
+      "test_accuracy_chunk": 0.7696476964769647,
+      "test_f1_comedy_hard": 0.8095238095238094,
+      "test_accuracy_comedy_hard": 0.8571428571428571,
+      "test_f1_comedy_soft": 0.8095238095238094,
+      "test_accuracy_comedy_soft": 0.8571428571428571,
+      "n_comedias_test": 7,
+      "best_checkpoint": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/fold_11/best_model"
+    }
+  ],
+  "chunk": {
+    "val_f1": {
+      "mean": 0.7576459341178108,
+      "std": 0.13554358696840058,
+      "min": 0.46289824160440446,
+      "max": 0.918858243657707
+    },
+    "val_accuracy": {
+      "mean": 0.8180830285095051,
+      "std": 0.0817005973234069,
+      "min": 0.6172506738544474,
+      "max": 0.9161425576519916
+    },
+    "test_f1": {
+      "mean": 0.7233362965461893,
+      "std": 0.1339155380223061,
+      "min": 0.41539659732688095,
+      "max": 0.8683033378253012
+    },
+    "test_accuracy": {
+      "mean": 0.7785453604314824,
+      "std": 0.07818056718453123,
+      "min": 0.5660377358490566,
+      "max": 0.8658280922431866
+    },
+    "pooled": {
+      "accuracy": 0.7836312323612418,
+      "macro_f1": 0.7866532078694074,
+      "micro_f1": 0.7836312323612418,
+      "per_class_metrics_csv": "/mnt/netapp2/Store_uni/home/usc/le/abs/O_ModelsSTORE_cuellar/RobertaCrossVal_12folds2_datasetNoOrg/per_class_metrics_global.csv"
+    }
+  },
+  "comedy": {
+    "hard": {
+      "test_f1": {
+        "mean": 0.8820546737213403,
+        "std": 0.13607615605050996,
+        "min": 0.619047619047619,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.9100529100529099,
+        "std": 0.10475656017578483,
+        "min": 0.7142857142857143,
+        "max": 1.0
+      }
+    },
+    "soft": {
+      "test_f1": {
+        "mean": 0.8820546737213403,
+        "std": 0.13607615605050996,
+        "min": 0.619047619047619,
+        "max": 1.0
+      },
+      "test_accuracy": {
+        "mean": 0.9100529100529099,
+        "std": 0.10475656017578483,
+        "min": 0.7142857142857143,
+        "max": 1.0
+      }
+    },
+    "pooled": {
+      "hard": {
+        "n_comedias": 100,
+        "accuracy": 0.92,
+        "macro_f1": 0.9258392761291313,
+        "micro_f1": 0.92
+      },
+      "soft": {
+        "n_comedias": 100,
+        "accuracy": 0.92,
+        "macro_f1": 0.9261043572637776,
+        "micro_f1": 0.92
+      }
+    }
+  }
+}

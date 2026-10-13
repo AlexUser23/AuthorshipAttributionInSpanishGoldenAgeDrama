@@ -1,0 +1,13 @@
+{
+  "tokenizer": "dccuchile/bert-base-spanish-wwm-cased",
+  "tokenizer_revision": null,
+  "corpus": "data/crossval_12folds_mroberta_tokenized",
+  "max_length": 512,
+  "special_tokens_per_sequence": 2,
+  "total_fragments": 5315,
+  "max_tokens_including_special": 500,
+  "fragments_exceeding_limit": 0,
+  "percent_exceeding_limit": 0.0,
+  "all_fragments_fit": true,
+  "affected_fragments": []
+}
