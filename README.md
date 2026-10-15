@@ -42,8 +42,8 @@ See [data preprocessing](data/README.md) and the [baseline protocol](src/baselin
 [environment.yml](environment.yml) contains the Linux x86_64 environment exported on 2026-10-13. It is a snapshot of the installed environment, not a record of every historical run; installation in a clean environment has not been validated.
 
 ```bash
-conda env create --name aa2-repro --file environment.yml
-conda activate aa2-repro
+conda env create --name AuthorshipAttributionInSpanishGoldenAgeDrama-repro --file environment.yml
+conda activate AuthorshipAttributionInSpanishGoldenAgeDrama-repro
 python -m pip check
 ```
 

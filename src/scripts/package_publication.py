@@ -53,7 +53,7 @@ def publication_bytes(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT / "dist/AA2-review.tar.gz")
+    parser.add_argument("--output", type=Path, default=ROOT / "dist/AuthorshipAttributionInSpanishGoldenAgeDrama.tar.gz")
     args = parser.parse_args()
     if args.output.exists():
         parser.error("Archive already exists; choose another --output.")
@@ -75,7 +75,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("xb") as handle, tarfile.open(fileobj=handle, mode="w:gz") as archive:
         for name, payload in payloads + [("MANIFEST.json", manifest)]:
-            info = tarfile.TarInfo("AA2/" + name)
+            info = tarfile.TarInfo("AuthorshipAttributionInSpanishGoldenAgeDrama/" + name)
             info.size, info.mode, info.mtime = len(payload), 0o644, 0
             archive.addfile(info, io.BytesIO(payload))
     print(f"{len(files)} files; {sum(len(p) for _, p in payloads):,} uncompressed bytes")
