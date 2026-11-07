@@ -47,7 +47,7 @@ conda activate AuthorshipAttributionInSpanishGoldenAgeDrama-repro
 python -m pip check
 ```
 
-GPU training requires a compatible NVIDIA driver. Experiments ran through Slurm at CESGA, requesting one NVIDIA A100, 32 CPUs and 64 GB RAM per job.
+GPU training requires a compatible NVIDIA driver. Experiments ran through Slurm, requesting one NVIDIA A100, 32 CPUs and 64 GB RAM per job.
 
 ## Execution
 
