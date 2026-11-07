@@ -19,10 +19,6 @@ from torch.utils.data import Dataset, DataLoader
 from torch.optim import AdamW
 import torch.nn.functional as F
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
@@ -425,39 +421,6 @@ def predict_and_save(
             comedy_true, comedy_pred_hard, comedy_pred_soft, comedy_probs_soft)
 
 
-def save_training_plot(history: dict, fold_idx: int, png_path: str):
-    epochs = list(range(1, len(history["train_loss"]) + 1))
-    fig, ax1 = plt.subplots(figsize=(9, 6))
-
-    ax1.plot(epochs, history["train_loss"], label="train_loss")
-    if any(v is not None for v in history["val_loss"]):
-        ax1.plot(epochs, [v if v is not None else np.nan for v in history["val_loss"]],
-                 label="val_loss")
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("Loss")
-
-    ax2 = ax1.twinx()
-    for key, marker, style, label in [
-        ("val_accuracy",  "o", "--", "val_accuracy"),
-        ("val_f1",        "x", "--", "val_f1"),
-        ("test_accuracy", "s", ":",  "test_accuracy"),
-        ("test_f1",       "d", ":",  "test_f1"),
-    ]:
-        vals = history.get(key, [])
-        if any(v is not None for v in vals):
-            ax2.plot(epochs[:len(vals)], [v if v is not None else np.nan for v in vals],
-                     linestyle=style, marker=marker, label=label)
-    ax2.set_ylabel("Accuracy / F1")
-
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper right")
-    plt.title(f"Training progress (fold {fold_idx})")
-    plt.tight_layout()
-    plt.savefig(png_path)
-    plt.close(fig)
-
-
 def mean_std(values):
     vals = [v for v in values if v is not None]
     if not vals:
@@ -634,8 +597,6 @@ for fold_idx in range(n_folds):
             json_path = os.path.join(fold_outdir, "training_history.json")
             with open(json_path, "w", encoding="utf-8") as jf:
                 json.dump(history, jf, indent=2, ensure_ascii=False, cls=NumpyEncoder)
-            save_training_plot(history, fold_idx,
-                               os.path.join(fold_outdir, "training_progress.png"))
 
             if epochs_no_improve >= EARLY_STOPPING_PATIENCE:
                 print(f"  Early stopping tras {EARLY_STOPPING_PATIENCE} épocas sin mejora.")
@@ -652,8 +613,6 @@ for fold_idx in range(n_folds):
     final_test_metrics = evaluate(model, test_dataloader, device)
     print(f"[Fold {fold_idx}] VAL final:  {best_val_metrics}")
     print(f"[Fold {fold_idx}] TEST final: {final_test_metrics}")
-
-    save_training_plot(history, fold_idx, os.path.join(fold_outdir, "training_progress.png"))
 
     txt_path = os.path.join(fold_outdir, "best_checkpoint_metrics.txt")
     with open(txt_path, "w", encoding="utf-8") as f:

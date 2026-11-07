@@ -433,32 +433,11 @@ def run_experiment(SEED, OUTPUT_DIR):
                     print(f"No mejora en '{metric_key}'. epochs_no_improve = {epochs_no_improve}/{EARLY_STOPPING_PATIENCE}")
 
 
-            png_path  = os.path.join(OUTPUT_DIR, "training_progress.png")
             json_path = os.path.join(OUTPUT_DIR, "training_history.json")
             with open(json_path, "w", encoding="utf-8") as jf:
                 json.dump(history, jf, indent=2, ensure_ascii=False)
 
-            epochs_x = list(range(1, len(history["train_loss"]) + 1))
-            plt.figure(figsize=(9, 6))
-            ax1 = plt.gca()
-            ax1.plot(epochs_x, history["train_loss"], label="train_loss")
-            if any(v is not None for v in history["val_loss"]):
-                ax1.plot(epochs_x, [v if v is not None else np.nan for v in history["val_loss"]], label="val_loss")
-            ax1.set_xlabel("Epoch")
-            ax1.set_ylabel("Loss")
-            ax2 = ax1.twinx()
-            for key, ls, mk in [("val_accuracy","--","o"), ("val_f1","--","x"), ("test_accuracy",":",  "s"), ("test_f1",":", "d")]:
-                if any(v is not None for v in history[key]):
-                    ax2.plot(epochs_x, [v if v is not None else np.nan for v in history[key]], linestyle=ls, marker=mk, label=key)
-            ax2.set_ylabel("Accuracy / F1")
-            lines_1, labels_1 = ax1.get_legend_handles_labels()
-            lines_2, labels_2 = ax2.get_legend_handles_labels()
-            ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="upper right")
-            plt.title("Training progress")
-            plt.tight_layout()
-            plt.savefig(png_path)
-            plt.close()
-            print(f"Gráfica y JSON de historial guardados en: {png_path}, {json_path}")
+            print(f"JSON de historial guardado en: {json_path}")
 
             if epochs_no_improve >= EARLY_STOPPING_PATIENCE:
                 print(f"Early stopping: no hubo mejora en {EARLY_STOPPING_PATIENCE} épocas. Terminando entrenamiento.")
@@ -529,31 +508,9 @@ def run_experiment(SEED, OUTPUT_DIR):
     )
 
 
-    png_path  = os.path.join(OUTPUT_DIR, "training_progress.png")
     json_path = os.path.join(OUTPUT_DIR, "training_history.json")
     with open(json_path, "w", encoding="utf-8") as jf:
         json.dump(history, jf, indent=2, ensure_ascii=False)
-
-    epochs_x = list(range(1, len(history["train_loss"]) + 1))
-    plt.figure(figsize=(9, 6))
-    ax1 = plt.gca()
-    ax1.plot(epochs_x, history["train_loss"], label="train_loss")
-    if any(v is not None for v in history["val_loss"]):
-        ax1.plot(epochs_x, [v if v is not None else np.nan for v in history["val_loss"]], label="val_loss")
-    ax1.set_xlabel("Epoch"); ax1.set_ylabel("Loss")
-    ax2 = ax1.twinx()
-    for key, ls, mk in [("val_accuracy","--","o"),("val_f1","--","x"),("test_accuracy",":","s"),("test_f1",":","d")]:
-        if any(v is not None for v in history[key]):
-            ax2.plot(epochs_x, [v if v is not None else np.nan for v in history[key]], linestyle=ls, marker=mk, label=key)
-    ax2.set_ylabel("Accuracy / F1")
-    lines_1, labels_1 = ax1.get_legend_handles_labels()
-    lines_2, labels_2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc="upper right")
-    plt.title("Training progress (final)")
-    plt.tight_layout()
-    plt.savefig(png_path)
-    plt.close()
-
 
     # Representation visualizations
 
@@ -777,7 +734,6 @@ def run_experiment(SEED, OUTPUT_DIR):
         "duda_voted_author":         duda_voted_author,
         "duda_vote_distribution":    duda_vote.to_dict(),
         "history_file":              json_path,
-        "plot_file":                 png_path,
     }
 
     txt_path = os.path.join(OUTPUT_DIR, "best_checkpoint_metrics.txt")

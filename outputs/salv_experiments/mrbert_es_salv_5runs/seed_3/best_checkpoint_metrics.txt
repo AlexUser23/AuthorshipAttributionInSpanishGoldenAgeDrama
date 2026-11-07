@@ -34,4 +34,3 @@ Distribución de votos por chunk:
   Tirso       :   3 chunks  (6.1%)
 
 Training history JSON: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/Experimento_SALV/MrBERT-es_5runs_8-3-2_seed44-1...5-2_2/seed_3/training_history.json
-Training progress plot: /mnt/netapp2/Store_uni/home/usc/le/abs/AAoutput/Experimento_SALV/MrBERT-es_5runs_8-3-2_seed44-1...5-2_2/seed_3/training_progress.png
